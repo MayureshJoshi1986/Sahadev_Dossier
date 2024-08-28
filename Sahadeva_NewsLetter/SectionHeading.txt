@@ -1,0 +1,41 @@
+﻿<tr>
+          <td>
+            <div
+              style="
+                padding: 0px 14px;
+                border-left: 4px solid #018577;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 16px;
+                font-weight: 800;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: normal;
+                letter-spacing: 0.32px;
+                text-align: left;
+                color: #393939;
+              ">
+              #SectionTitle#
+            </div>
+          </td>
+        </tr>
+		
+        <tr>
+          <td>
+            <table class="customTable">
+              <thead>
+                <tr style="border: 1px solid #969ba1">
+                  <th style="width: 2%; text-align: center; border-bottom: 1px solid #eaebec;padding: 10px;font-family: Georgia;font-size: 12px;text-align: left;"">No.</th>
+				  <th style="width: 15%; text-align: center; border-bottom: 1px solid #eaebec;padding: 10px;font-family: Georgia;font-size: 12px;text-align: left;"">Cluster</th>
+                  <th style="width: 25%; text-align: center; border-bottom: 1px solid #eaebec;padding: 10px;font-family: Georgia;font-size: 12px;text-align: left;"">Headline</th>
+                  <th style="width: 30%; text-align: center; border-bottom: 1px solid #eaebec;padding: 10px;font-family: Georgia;font-size: 12px;text-align: left;"">Summary</th>
+                  <th style="width: 8%; text-align: center; border-bottom: 1px solid #eaebec;padding: 10px;font-family: Georgia;font-size: 12px;text-align: left;"">Sentiment</th>
+                  <th style="width: 10%; text-align: center; border-bottom: 1px solid #eaebec;padding: 10px;font-family: Georgia;font-size: 12px;text-align: left;"">Publication</th>
+                  <th style="width: 10%; text-align: center; border-bottom: 1px solid #eaebec;padding: 10px;font-family: Georgia;font-size: 12px;text-align: left;"">Article Type</th>
+                </tr>
+              </thead>
+              <tbody>
+				#SectionRows#
+			  </tbody>
+            </table>
+          </td>
+        </tr>

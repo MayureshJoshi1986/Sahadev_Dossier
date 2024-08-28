@@ -1,0 +1,1091 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modern HTML Email Template</title>
+    <style type="text/css">
+      @import url("https://fonts.googleapis.com/css2?family=Lato:wght@700;900&family=Noto+Sans+Georgian&family=Noto+Serif+Georgian:wght@400;700&family=Open+Sans:wght@400;600&family=Roboto:wght@100&display=swap");
+      body {
+        margin: 0;
+        background-color: #f0f0f0;
+      }
+      table {
+        border-spacing: 0;
+      }
+      td {
+        padding: 0;
+      }
+      img {
+        border: 0;
+      }
+      .wrapper {
+        width: 100%;
+        table-layout: fixed;
+        background-color: #f0f0f0;
+        padding: 40px 0px;
+      }
+      .main {
+        background-color: #fff;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 600px;
+        border-spacing: 0;
+        border-radius: 10px;
+        font-family: "Noto Sans Georgian", sans-serif;
+        color: #393939;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .customTable {
+        width: 100%;
+        background-color: #F2F8FB;
+        /* border-collapse: collapse; */
+        border-width: 1px;
+        border-color: #eaebec;
+        border-style: solid;
+        color: #000000;
+        margin: 20px 0px;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+    </style>
+</head>
+<body>
+    <center class="wrapper">
+        <table class="main" width="100%" style="padding: 40px">
+            <!-- LOGO SECTION and Title info -->
+            <tr>
+                <td>
+                    <div style="font-size: 40px; color: #373469; font-weight: bolder; padding-bottom: 20px;">
+                        wakefit
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table width="100%">
+                        <tr>
+                            <td class="two-columns">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="border-bottom: 2px solid #41a499; padding-bottom: 4px; font-family: 'Lato', sans-serif;
+                                        font-size: 20px; font-weight: 900; letter-spacing: 1px; text-align: center; color: #333;">
+                                        MEDIA COVERAGE REPORT (DAILY)
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="two-columns" style="text-align: right">
+                                <div style="font-size: 14px; color: #41a499; font-weight: 900; font-family: 'Lato', sans-serif;">
+                                    {{Date}}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <!-- Title info section  -->
+            <tr>
+                <td>
+                    <div style="padding: 20px 0px">
+                        <div style="padding-left: 10px; font-family: 'Open Sans', sans-serif; font-size: 18px;
+                            font-weight: bold; letter-spacing: 0.36px; text-align: left; color: #393939;">
+                            {{BrandName}}
+                        </div>
+                        <div>
+                            <ul style="padding-inline-start: 15px; font-size: 12px; font-family: Georgia; font-size: 12px;
+                                text-align: justify; color: #393939;">
+                                <li style="margin: 0 0 10px 0">{{BrandInfo}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <!--Wakefit Print Media News section  -->
+            <tr>
+                <td>
+                    <div style="padding: 0px 14px; border-left: 4px solid #018577; font-family: 'Open Sans', sans-serif;
+                        font-size: 16px; font-weight: 600; font-stretch: normal; font-style: normal;
+                        line-height: normal; letter-spacing: 0.32px; text-align: left; color: #393939;">
+                        {{BrandName}} Print Media News
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table class="customTable">
+                        <thead style="background-color: #ffffff; color: #7a7a7a; font-size: 12px;">
+                            <tr style="border: 1px solid #969ba1">
+                                <th style="width: 5%; text-align: center; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    No.
+                                </th>
+                                <th style="width: 20%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Headline
+                                </th>
+                                <th style="width: 30%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Summary
+                                </th>
+                                <th style="width: 10%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Sentiment
+                                </th>
+                                <th style="width: 15%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Publication
+                                </th>
+                                <th style="width: 20%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Article Type
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background-color: #EBF6F5;">
+                                <td style="width: 5%; text-align: center; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding: 12px 12px 3px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="background-color: #018577; border-radius: 3px; color: #fff; padding: 2px 4px;">
+                                        {{PMNHeadlineTitle1}}
+                                    </div>
+                                </td>
+                                <td style="width: 30%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 10%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 15%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                            </tr>
+                            <tr style="background-color: #EBF6F5;">
+                                <td style="width: 5%; text-align: center; border-bottom: 1px solid #DAE4E4; padding: 15px 12px;
+                                    font-family: Georgia; font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{PMNSrNo1}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{PMNHeadline1}} 
+                                </td>
+                                <td style="width: 30%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{PMNSummary1}}
+                                </td>
+                                <td style="width: 10%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="display: flex; justify-content: center; gap: 10px;">
+                                        {{PMNSentiment1}}
+                                        <div style="margin: 2px 0px; background-color: #73c6fb; width: 10px; height: 10px;
+                                            border-radius: 50%;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{PMNPublication1}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{PMNArticle1}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 5%; text-align: center; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding: 12px 12px 3px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="background-color: #007db6; border-radius: 3px; color: #fff; padding: 2px 4px;">
+                                        {{PMNHeadlineTitle2}}
+                                    </div>
+                                </td>
+                                <td style="width: 30%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 10%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 15%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 5%; text-align: center; border-bottom: 1px solid #DAE4E4; padding: 15px 12px;
+                                    font-family: Georgia; font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{PMNSrNo2}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{PMNHeadline2}}
+                                </td>
+                                <td style="width: 30%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{PMNSummary2}}
+                                </td>
+                                <td style="width: 10%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="display: flex; justify-content: center; gap: 10px;">
+                                        {{PMNSentiment2}}
+                                        <div style="margin: 2px 0px; background-color: #73c6fb; width: 10px; height: 10px;
+                                            border-radius: 50%;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{PMNPublication2}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{PMNArticle2}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 5%; text-align: center; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{PMNSrNo3}}
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{PMNHeadline3}}
+                                </td>
+                                <td style="width: 30%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{PMNSummary3}}
+                                </td>
+                                <td style="width: 10%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="display: flex; justify-content: center; gap: 10px;">
+                                        {{PMNSentiment3}}
+                                        <div style="margin: 2px 0px; background-color: #43b049; width: 10px; height: 10px;
+                                            border-radius: 50%;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{PMNPublication3}}
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{PMNArticle3}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <!-- Wakefit Online Media News -->
+            <tr>
+                <td>
+                    <div style="padding: 0px 14px; border-left: 4px solid #018577; font-family: 'Open Sans', sans-serif;
+                        font-size: 16px; font-weight: 600; letter-spacing: 0.32px; text-align: left;
+                        color: #393939;">
+                        {{BrandName}} Online Media News
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table class="customTable">
+                        <thead style="background-color: #ffffff; color: #7a7a7a; font-size: 12px;">
+                            <tr style="border: 1px solid #969ba1">
+                                <th style="width: 5%; text-align: center; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    No.
+                                </th>
+                                <th style="width: 20%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Headline
+                                </th>
+                                <th style="width: 30%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Summary
+                                </th>
+                                <th style="width: 10%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Sentiment
+                                </th>
+                                <th style="width: 15%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Publication
+                                </th>
+                                <th style="width: 20%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Article Type
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background-color: #EBF6F5;">
+                                <td style="width: 5%; text-align: center; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding: 12px 12px 3px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="background-color: #018577; border-radius: 3px; color: #fff; width: fit-content;
+                                        padding: 2px 4px;">
+                                        {{OMNHeadlineTitle1}}
+                                    </div>
+                                </td>
+                                <td style="width: 30%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 10%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 15%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                            </tr>
+                            <tr style="background-color: #EBF6F5;">
+                                <td style="width: 5%; text-align: center; border-bottom: 1px solid #DAE4E4; padding: 15px 12px;
+                                    font-family: Georgia; font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{OMNSrNo1}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{OMNHeadlinet1}}
+                                </td>
+                                <td style="width: 30%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{OMNSummary1}}
+                                </td>
+                                <td style="width: 10%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="display: flex; justify-content: center; gap: 10px;">
+                                        {{OMNSentiment1}}
+                                        <div style="margin: 2px 0px; background-color: #73c6fb; width: 10px; height: 10px;
+                                            border-radius: 50%;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{OMNPublication1}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{OMNArticle1}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 5%; text-align: center; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding: 12px 12px 3px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="background-color: #007db6; border-radius: 3px; color: #fff; width: fit-content;
+                                        padding: 2px 4px;">
+                                        {{OMNHeadlineTitle2}}
+                                    </div>
+                                </td>
+                                <td style="width: 30%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 10%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 15%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 5%; text-align: center; border-bottom: 1px solid #DAE4E4; padding: 15px 12px;
+                                    font-family: Georgia; font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{OMNSrNo2}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{OMNHeadline2}}
+                                </td>
+                                <td style="width: 30%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{OMNSummary2}}
+                                </td>
+                                <td style="width: 10%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="display: flex; justify-content: center; gap: 10px;">
+                                        {{OMNSentiment2}}
+                                        <div style="margin: 2px 0px; background-color: #73c6fb; width: 10px; height: 10px;
+                                            border-radius: 50%;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{OMNPublication2}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{OMNArticle2}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 5%; text-align: center; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{OMNSrNo3}}
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{OMNHeadline3}}
+                                </td>
+                                <td style="width: 30%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{OMNSummary3}}
+                                </td>
+                                <td style="width: 10%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="display: flex; justify-content: center; gap: 10px;">
+                                        {{OMNSentiment3}}
+                                        <div style="margin: 2px 0px; background-color: #43b049; width: 10px; height: 10px;
+                                            border-radius: 50%;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{OMNPublication3}}
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{OMNArticle3}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <!-- Competitors  - Duroflex SECTION -->
+            <tr>
+                <td>
+                    <div style="font-family: 'Open Sans', sans-serif; font-size: 18px; font-weight: bold;
+                        letter-spacing: 0.36px; text-align: left; color: #393939; padding-bottom: 10px;">
+                        Competitors - {{CompetitorsName}}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul style="padding-inline-start: 15px; font-size: 12px; font-family: Georgia; font-size: 12px;
+                        text-align: justify; color: #393939;">
+                        <li style="margin: 0 0 10px 0">{{CompetitorsInfos}}</li>
+                    </ul>
+                </td>
+            </tr>
+            <!-- Competitors Print Media News -->
+            <tr>
+                <td>
+                    <div style="padding: 0px 14px; border-left: 4px solid #018577; font-family: 'Open Sans', sans-serif;
+                        font-size: 16px; font-weight: 600; letter-spacing: 0.32px; text-align: left;
+                        color: #393939; margin-top: 10px;">
+                        {{CompetitorsName}} Print Media News
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table class="customTable">
+                        <thead style="background-color: #ffffff; color: #7a7a7a; font-size: 12px;">
+                            <tr style="border: 1px solid #969ba1">
+                                <th style="width: 5%; text-align: center; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    No.
+                                </th>
+                                <th style="width: 20%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Headline
+                                </th>
+                                <th style="width: 30%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Summary
+                                </th>
+                                <th style="width: 10%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Sentiment
+                                </th>
+                                <th style="width: 15%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Publication
+                                </th>
+                                <th style="width: 20%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Article Type
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background-color: #EBF6F5;">
+                                <td style="width: 5%; text-align: center; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: fit-content; width: 20%; padding: 12px 12px 3px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="background-color: #018577; border-radius: 3px; color: #fff; padding: 2px 4px;">
+                                        {{CPMNHeadlineTitle1}}
+                                    </div>
+                                </td>
+                                <td style="width: 30%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 10%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 15%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                            </tr>
+                            <tr style="background-color: #EBF6F5;">
+                                <td style="width: 5%; text-align: center; border-bottom: 1px solid #DAE4E4; padding: 15px 12px;
+                                    font-family: Georgia; font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{CPMNSrNo1}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{CPMNHeadline1}}
+                                </td>
+                                <td style="width: 30%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{CPMNSummary1}}
+                                </td>
+                                <td style="width: 10%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="display: flex; justify-content: center; gap: 10px;">
+                                        {{CPMNSentiment1}}
+                                        <div style="margin: 2px 0px; background-color: #73c6fb; width: 10px; height: 10px;
+                                            border-radius: 50%;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{CPMNPublication1}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{CPMNArticle1}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 5%; text-align: center; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: fit-content; width: 20%; padding: 12px 12px 3px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="background-color: #007db6; border-radius: 3px; color: #fff; padding: 2px 4px;">
+                                        {{CPMNHeadlineTitle2}}
+                                    </div>
+                                </td>
+                                <td style="width: 30%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 10%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 15%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 5%; text-align: center; border-bottom: 1px solid #DAE4E4; padding: 15px 12px;
+                                    font-family: Georgia; font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{CPMNSrNo2}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{CPMNHeadline2}}
+                                </td>
+                                <td style="width: 30%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{CPMNSummary2}}
+                                </td>
+                                <td style="width: 10%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="display: flex; justify-content: center; gap: 10px;">
+                                        {{CPMNSentiment2}}
+                                        <div style="margin: 2px 0px; background-color: #73c6fb; width: 10px; height: 10px;
+                                            border-radius: 50%;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{CPMNPublication2}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{CPMNArticle2}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 5%; text-align: center; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{CPMNSrNo3}}
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{CPMNHeadline3}}
+                                </td>
+                                <td style="width: 30%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{CPMNSummary3}}
+                                </td>
+                                <td style="width: 10%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="display: flex; justify-content: center; gap: 10px;">
+                                        {{CPMNSentiment3}}
+                                        <div style="margin: 2px 0px; background-color: #43b049; width: 10px; height: 10px;
+                                            border-radius: 50%;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{CPMNPublication3}}
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{CPMNArticle3}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <!-- Competitors Online Media News -->
+            <tr>
+                <td>
+                    <div style="padding: 0px 14px; border-left: 4px solid #018577; font-family: 'Open Sans', sans-serif;
+                        font-size: 16px; font-weight: 600; letter-spacing: 0.32px; text-align: left;
+                        color: #393939;">
+                        {{CompetitorsName}} Online Media News
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table class="customTable">
+                        <thead style="background-color: #ffffff; color: #7a7a7a; font-size: 12px;">
+                            <tr style="border: 1px solid #969ba1">
+                                <th style="width: 5%; text-align: center; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    No.
+                                </th>
+                                <th style="width: 20%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Headline
+                                </th>
+                                <th style="width: 30%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Summary
+                                </th>
+                                <th style="width: 10%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Sentiment
+                                </th>
+                                <th style="width: 15%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Publication
+                                </th>
+                                <th style="width: 20%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Article Type
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background-color: #EBF6F5;">
+                                <td style="width: 5%; text-align: center; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding: 12px 12px 3px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="background-color: #018577; border-radius: 3px; color: #fff; width: fit-content;
+                                        padding: 2px 4px;">
+                                        {{COMNHeadlineTitle1}}
+                                    </div>
+                                </td>
+                                <td style="width: 30%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 10%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 15%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                            </tr>
+                            <tr style="background-color: #EBF6F5;">
+                                <td style="width: 5%; text-align: center; border-bottom: 1px solid #DAE4E4; padding: 15px 12px;
+                                    font-family: Georgia; font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{COMNSrNo1}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{COMNHeadline1}}
+                                </td>
+                                <td style="width: 30%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{COMNSummary1}}
+                                </td>
+                                <td style="width: 10%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="display: flex; justify-content: center; gap: 10px;">
+                                        {{COMNSentiment1}}
+                                        <div style="margin: 2px 0px; background-color: #73c6fb; width: 10px; height: 10px;
+                                            border-radius: 50%;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{COMNPublication1}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{COMNArticle1}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 5%; text-align: center; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding: 12px 12px 3px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="background-color: #007db6; border-radius: 3px; color: #fff; width: fit-content;
+                                        padding: 2px 4px;">
+                                        {{COMNHeadlineTitle2}}
+                                    </div>
+                                </td>
+                                <td style="width: 30%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 10%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 15%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 5%; text-align: center; border-bottom: 1px solid #DAE4E4; padding: 15px 12px;
+                                    font-family: Georgia; font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{COMNSrNo2}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{COMNHeadline2}}
+                                </td>
+                                <td style="width: 30%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{COMNSummary2}}
+                                </td>
+                                <td style="width: 10%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="display: flex; justify-content: center; gap: 10px;">
+                                        {{COMNSentiment2}}
+                                        <div style="margin: 2px 0px; background-color: #73c6fb; width: 10px; height: 10px;
+                                            border-radius: 50%;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{COMNPublication2}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{COMNArticle2}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 5%; text-align: center; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{COMNSrNo3}}
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{COMNHeadline3}}
+                                </td>
+                                <td style="width: 30%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{COMNSummary3}}
+                                </td>
+                                <td style="width: 10%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="display: flex; justify-content: center; gap: 10px;">
+                                        {{COMNSentiment3}}
+                                        <div style="margin: 2px 0px; background-color: #43b049; width: 10px; height: 10px;
+                                            border-radius: 50%;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{COMNPublication3}}
+                                </td>
+                                <td style="width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    {{COMNArticle3}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <!-- Industry section -->
+            <tr>
+                <td>
+                    <div style="font-family: 'Open Sans', sans-serif; font-size: 18px; font-weight: bold;
+                        letter-spacing: 0.36px; text-align: left; color: #393939; padding-bottom: 10px;">
+                        Industry
+                    </div>
+                </td>
+            </tr>
+            <!-- industry ul -->
+            <tr>
+                <td>
+                    <ul style="padding-inline-start: 15px; font-size: 12px; font-family: Georgia; font-size: 12px;
+                        text-align: justify; color: #393939;">
+                        <li style="margin: 0 0 10px 0">{{IndustryInfo}}</li>
+                    </ul>
+                </td>
+            </tr>
+            <!-- industry table -->
+            <tr>
+                <td>
+                    <table class="customTable">
+                        <thead style="background-color: #ffffff; color: #7a7a7a; font-size: 12px;">
+                            <tr style="border: 1px solid #969ba1">
+                                <th style="width: 5%; text-align: center; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    No.
+                                </th>
+                                <th style="width: 20%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Headline
+                                </th>
+                                <th style="width: 30%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Summary
+                                </th>
+                                <th style="width: 10%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Sentiment
+                                </th>
+                                <th style="width: 15%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Publication
+                                </th>
+                                <th style="width: 20%; text-align: start; border-bottom: 1px solid #eaebec; padding: 10px;
+                                    font-family: Georgia; font-size: 12px; text-align: left;">
+                                    Article Type
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background-color: #EBF6F5;">
+                                <td style="width: 5%; text-align: center; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding: 12px 12px 3px 12px; font-family: Georgia; font-size: 12px;
+                                    text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="background-color: #018577; border-radius: 3px; color: #fff; width: fit-content;
+                                        padding: 2px 4px;">
+                                        {{IHeadlineTitle1}}
+                                    </div>
+                                </td>
+                                <td style="width: 30%; padding-top: 10px; width: 20%; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 10%; padding-top: 10px; width: 20%; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 15%; padding-top: 10px; width: 20%; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding-top: 10px; width: 20%; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                            </tr>
+                            <tr style="background-color: #EBF6F5;">
+                                <td style="width: 5%; text-align: center; border-bottom: 1px solid #DAE4E4; padding-top: 10px;
+                                    width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px; text-align: left;
+                                    color: #393939; vertical-align: top;">
+                                    {{ISrNo1}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding-top: 10px; width: 20%;
+                                    padding: 15px 12px; font-family: Georgia; font-size: 12px; text-align: left;
+                                    color: #393939; vertical-align: top;">
+                                    {{IHeadline1}}
+                                </td>
+                                <td style="width: 30%; border-bottom: 1px solid #DAE4E4; padding-top: 10px; width: 20%;
+                                    padding: 15px 12px; font-family: Georgia; font-size: 12px; text-align: left;
+                                    color: #393939; vertical-align: top;">
+                                    {{ISummary1}}
+                                </td>
+                                <td style="width: 10%; border-bottom: 1px solid #DAE4E4; padding-top: 10px; width: 20%;
+                                    padding: 15px 12px; font-family: Georgia; font-size: 12px; text-align: left;
+                                    color: #393939; vertical-align: top;">
+                                    <div style="display: flex; justify-content: center; gap: 10px;">
+                                        {{ISentiment1}}
+                                        <div style="margin: 2px 0px; background-color: #73c6fb; width: 10px; height: 10px;
+                                            border-radius: 50%;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; border-bottom: 1px solid #DAE4E4; padding-top: 10px; width: 20%;
+                                    padding: 15px 12px; font-family: Georgia; font-size: 12px; text-align: left;
+                                    color: #393939; vertical-align: top;">
+                                    {{IPublication1}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding-top: 10px; width: 20%;
+                                    padding: 15px 12px; font-family: Georgia; font-size: 12px; text-align: left;
+                                    color: #393939; vertical-align: top;">
+                                    {{IArticle1}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 5%; text-align: center; padding-top: 10px; width: 20%; padding: 15px 12px;
+                                    font-family: Georgia; font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; width: 20%; padding: 12px 12px 3px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="background-color: #007db6; border-radius: 3px; color: #fff; width: fit-content;
+                                        padding: 2px 4px;">
+                                        {{IHeadlineTitle2}}
+                                    </div>
+                                </td>
+                                <td style="width: 30%; padding-top: 10px; width: 20%; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 10%; padding-top: 10px; width: 20%; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 15%; padding-top: 10px; width: 20%; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                                <td style="width: 20%; padding-top: 10px; width: 20%; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 5%; text-align: center; border-bottom: 1px solid #DAE4E4; padding-top: 10px;
+                                    width: 20%; padding: 15px 12px; font-family: Georgia; font-size: 12px; text-align: left;
+                                    color: #393939; vertical-align: top;">
+                                    {{ISrNo2}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding-top: 10px; width: 20%;
+                                    padding: 15px 12px; font-family: Georgia; font-size: 12px; text-align: left;
+                                    color: #393939; vertical-align: top;">
+                                    {{IHeadline2}}
+                                </td>
+                                <td style="width: 30%; border-bottom: 1px solid #DAE4E4; padding-top: 10px; width: 20%;
+                                    padding: 15px 12px; font-family: Georgia; font-size: 12px; text-align: left;
+                                    color: #393939; vertical-align: top;">
+                                    {{ISummary2}}
+                                </td>
+                                <td style="width: 10%; border-bottom: 1px solid #DAE4E4; padding-top: 10px; width: 20%;
+                                    padding: 15px 12px; font-family: Georgia; font-size: 12px; text-align: left;
+                                    color: #393939; vertical-align: top;">
+                                    <div style="display: flex; justify-content: center; gap: 10px;">
+                                        {{ISentiment2}}
+                                        <div style="margin: 2px 0px; background-color: #73c6fb; width: 10px; height: 10px;
+                                            border-radius: 50%;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; border-bottom: 1px solid #DAE4E4; padding-top: 10px; width: 20%;
+                                    padding: 15px 12px; font-family: Georgia; font-size: 12px; text-align: left;
+                                    color: #393939; vertical-align: top;">
+                                    {{IPublication2}}
+                                </td>
+                                <td style="width: 20%; border-bottom: 1px solid #DAE4E4; padding-top: 10px; width: 20%;
+                                    padding: 15px 12px; font-family: Georgia; font-size: 12px; text-align: left;
+                                    color: #393939; vertical-align: top;">
+                                    {{IArticle2}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 5%; text-align: center; padding-top: 10px; width: 20%; padding: 15px 12px;
+                                    font-family: Georgia; font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{ISrNo3}}
+                                </td>
+                                <td style="width: 20%; padding-top: 10px; width: 20%; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{IHeadline3}}
+                                </td>
+                                <td style="width: 30%; padding-top: 10px; width: 20%; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{ISummary3}}
+                                </td>
+                                <td style="width: 10%; padding-top: 10px; width: 20%; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    <div style="display: flex; justify-content: center; gap: 10px;">
+                                        {{ISentiment3}}
+                                        <div style="margin: 2px 0px; background-color: #43b049; width: 10px; height: 10px;
+                                            border-radius: 50%;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; padding-top: 10px; width: 20%; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{IPublication3}}
+                                </td>
+                                <td style="width: 20%; padding-top: 10px; width: 20%; padding: 15px 12px; font-family: Georgia;
+                                    font-size: 12px; text-align: left; color: #393939; vertical-align: top;">
+                                    {{IArticle3}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <!-- FOOTER SECTION -->
+            <tr>
+                <td align="center">
+                    <img src="data:image/png;base64,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"
+                        alt="" />
+                </td>
+            </tr>
+            <tr>
+                <td align="center">
+                    <div style="padding: 20px; font-family: Georgia; font-size: 13px; text-align: center;
+                        color: #41414e;">
+                        All copyrights reserved
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </center>
+</body>
+</html>
