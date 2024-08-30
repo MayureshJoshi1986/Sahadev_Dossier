@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Sahadeva.Dossier.DocumentGenerator.Configuration;
 using Sahadeva.Dossier.DocumentGenerator.IO;
+using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using Sahadeva.Dossier.DocumentGenerator.Storage;
 
 namespace Sahadeva.Dossier.DocumentGenerator
@@ -23,7 +24,7 @@ namespace Sahadeva.Dossier.DocumentGenerator
                 // TODO: Read jobs from the queue
 
                 // TODO: Pass in the params required to generate the dossier. e.g. Template name
-                await dossierGenerator.CreateDocumentFromTemplate("Air_India_Express.docx", "Air_India_Dossier.docx");
+                await dossierGenerator.CreateDocumentFromTemplate("Air_India_Express_modified.docx", "Air_India_Dossier.docx");
             //}
         }
 
@@ -65,6 +66,7 @@ namespace Sahadeva.Dossier.DocumentGenerator
             }
 
             services.AddSingleton<FileManager>();
+            services.AddSingleton<PlaceholderHelper>();
             services.AddSingleton<DossierGenerator>();
         }
     }

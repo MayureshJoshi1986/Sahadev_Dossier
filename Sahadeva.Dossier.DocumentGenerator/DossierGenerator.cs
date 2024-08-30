@@ -1,30 +1,33 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using Sahadeva.Dossier.DocumentGenerator.IO;
-using DocumentFormat.OpenXml.Wordprocessing;
-using System.IO;
-using DocumentFormat.OpenXml;
-using OpenXmlPowerTools;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
 using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 
 namespace Sahadeva.Dossier.DocumentGenerator
 {
     internal class DossierGenerator
     {
-        private readonly Regex _placeholder = new Regex(@"\{\{AF\.[^\}]+\}\}");
         private readonly FileManager _fileManager;
+        private readonly PlaceholderHelper _placeHolderHelper;
 
-        public DossierGenerator(FileManager fileManager)
+        public DossierGenerator(FileManager fileManager, PlaceholderHelper placeholderHelper)
         {
             _fileManager = fileManager;
+            _placeHolderHelper = placeholderHelper;
         }
 
         internal async Task CreateDocumentFromTemplate(string templateName, string outputFileName)
         {
             using (MemoryStream stream = await ReadFromTemplate(templateName))
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(stream, true))
             {
-                FixPlaceholdersAcrossRuns(stream);
+                var placeholders = _placeHolderHelper.GetPlaceholderMap(wordDoc);
+
+                // TODO: Temp to check placeholders
+                placeholders.ForEach(x => Console.WriteLine(x.Text));
+
+                // Flush changes from the word doc to the memory stream
+                wordDoc.Save();
+
                 WriteFile(stream, outputFileName);
             }
         }
@@ -38,38 +41,6 @@ namespace Sahadeva.Dossier.DocumentGenerator
         private void WriteFile(MemoryStream stream, string fileName)
         {
             _fileManager.WriteFile(stream, fileName);
-        }
-
-        private void FixPlaceholdersAcrossRuns(MemoryStream stream)
-        {
-            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(stream, true))
-            {
-                XDocument xDoc = wordDoc.MainDocumentPart.GetXDocument();
-
-                var content = xDoc.Descendants(W.p);
-                var count = RegexHelper.Replace(
-                    content,
-                    _placeholder,
-                    (match) => match.Value);
-
-                // Save changes to the document
-                wordDoc.MainDocumentPart.PutXDocument();
-
-                //var body = wordDoc.MainDocumentPart?.Document.Body ?? throw new ApplicationException("Invalid document");
-                // Replace placeholders in the document body
-                //foreach (var text in body.Descendants<Text>())
-                //{
-                //    foreach (var placeholder in replacements.Keys)
-                //    {
-                //        if (text.Text.Contains(placeholder))
-                //        {
-                //            text.Text = text.Text.Replace(placeholder, replacements[placeholder]);
-                //        }
-                //    }
-                //}
-                //wordDoc.MainDocumentPart.Document.Save();
-            }
-
         }
     }
 }
