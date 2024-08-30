@@ -19,6 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Sahadeva.Dossier.DAL\Sahadeva.Dossier.DAL.csproj" />
+    <ProjectReference Include="..\Sahadeva.Dossier.Entities\Sahadeva.Dossier.Entities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
