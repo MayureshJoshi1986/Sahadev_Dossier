@@ -1,8 +1,11 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
+using Sahadeva.Dossier.DAL;
+using Sahadeva.Dossier.DocumentGenerator.Extensions;
 using Sahadeva.Dossier.DocumentGenerator.IO;
 using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using Sahadeva.Dossier.DocumentGenerator.Processing;
 using Sahadeva.Dossier.Entities;
+using System.Data;
 
 namespace Sahadeva.Dossier.DocumentGenerator
 {
@@ -29,20 +32,35 @@ namespace Sahadeva.Dossier.DocumentGenerator
             {
                 var placeholders = _placeholderHelper.GetPlaceholderMap(wordDoc);
 
+                // TODO: We can optimise here once we know from where to get the data
+                // Currently, we seem to have multiple DAL classes which seem quite similar to each other
+                var data = LoadDataset(job);
+
                 foreach (var placeholder in placeholders) 
                 {
                     var processor = _placeholderFactory.CreateProcessor(placeholder);
-                    //processor.ReplacePlaceholder(wordDoc);
+                    Console.Write(placeholder.Text + "="); // TODO: For testing
+                    processor.ReplacePlaceholder(wordDoc, data);
+                    Console.WriteLine(placeholder.Text); // TODO: For testing
                 }
-
-                // TODO: Temp to check placeholders
-                placeholders.ForEach(x => Console.WriteLine(x.Text));
 
                 // Flush changes from the word doc to the memory stream
                 wordDoc.Save();
 
                 WriteFile(stream, job.TemplateName);
             }
+        }
+
+        private DataSet LoadDataset(DossierJob job)
+        {
+            var dataset = new DataSet();
+
+            var dal = new dossierDAL();
+            var clientData = dal.Dossier_FetchClientData_DT2(job.CoverageDossierId);
+
+            dataset.AddTableToDataSet(clientData, "ClientData");
+
+            return dataset;
         }
 
         private async Task<MemoryStream> ReadFromTemplate(string fileName)

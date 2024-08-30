@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
+using System.Data;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Processing
 {
@@ -6,7 +7,6 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
     {
         string Expression { get; }
 
-        void ReplacePlaceholder(WordprocessingDocument wordDoc);
-        bool Validate();
+        void ReplacePlaceholder(WordprocessingDocument wordDoc, DataSet data);
     }
 }
