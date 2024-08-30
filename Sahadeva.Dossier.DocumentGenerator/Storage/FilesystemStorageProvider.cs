@@ -13,20 +13,30 @@ namespace Sahadeva.Dossier.DocumentGenerator.Storage
 
         public Task<byte[]> GetFile(string fileName)
         {
-            var filePath = GetFinalPath(fileName);
-
+            var filePath = GetTemplatePath(fileName);
             return File.ReadAllBytesAsync(filePath);
         }
 
         public void WriteFile(MemoryStream stream, string fileName)
         {
-            var filePath = GetFinalPath(fileName);
+            var filePath = GetOutputPath(fileName);
+
+            // Ensure the directory exists
+            var directory = Path.GetDirectoryName(filePath);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory!);
+            }
+
             using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
             {
                 stream.WriteTo(fileStream);
             }
         }
 
-        private string GetFinalPath(string fileName) => Path.Combine(_options.TemplatePath, fileName);
+        private string GetTemplatePath(string fileName) => Path.Combine(_options.TemplatePath, fileName);
+
+        private string GetOutputPath(string fileName) => Path.Combine(_options.OutputPath, fileName);
+
     }
 }

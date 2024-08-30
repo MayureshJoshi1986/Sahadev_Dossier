@@ -1,4 +1,6 @@
 ﻿using Microsoft.Practices.EnterpriseLibrary.Data;
+using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
+using Sahadeva.Dossier.Common.Configuration;
 using System;
 using System.Data;
 using System.Data.Common;
@@ -28,7 +30,8 @@ namespace Sahadeva.Dossier.Common
 
         public DataAccessWrapper(string ConnectionString)
         {
-            this.database = DatabaseFactory.CreateDatabase(ConnectionString);
+            var connectionString = ConfigurationManager.Settings[ConnectionString];
+            database = new SqlDatabase(connectionString);
         }
 
         #endregion Constructor

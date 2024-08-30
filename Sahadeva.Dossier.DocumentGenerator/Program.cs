@@ -4,7 +4,9 @@ using Microsoft.Extensions.Hosting;
 using Sahadeva.Dossier.DocumentGenerator.Configuration;
 using Sahadeva.Dossier.DocumentGenerator.IO;
 using Sahadeva.Dossier.DocumentGenerator.OpenXml;
+using Sahadeva.Dossier.DocumentGenerator.Processing;
 using Sahadeva.Dossier.DocumentGenerator.Storage;
+using ConfigurationManager = Sahadeva.Dossier.Common.Configuration.ConfigurationManager;
 
 namespace Sahadeva.Dossier.DocumentGenerator
 {
@@ -21,13 +23,21 @@ namespace Sahadeva.Dossier.DocumentGenerator
             // we want this to keep running and processing jobs as they become available
             //while (true)
             //{
-                // TODO: Read jobs from the queue
 
-                // TODO: Pass in the params required to generate the dossier. e.g. Template name
-                await dossierGenerator.CreateDocumentFromTemplate("Air_India_Express_modified.docx", "Air_India_Dossier.docx");
+            try
+            {
+                // TODO: Read jobs from the queue
+                // TODO: This is temp to simulate getting a job from the queue
+                var job = DossierJobGenerator.GetJob(args);
+                await dossierGenerator.ExecuteJob(job);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
             //}
         }
-
 
         /// <summary>
         /// Bootstraps the application
@@ -37,25 +47,17 @@ namespace Sahadeva.Dossier.DocumentGenerator
         static IHost InitialiseHost()
         {
             return Host.CreateDefaultBuilder()
-            .ConfigureAppConfiguration((context, config) =>
-            {
-                config
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("NETCORE_ENVIRONMENT")}.json", optional: true)
-                .AddEnvironmentVariables();
-            })
             .ConfigureServices(GetApplicationServices)
             .Build();
         }
 
         static void GetApplicationServices(HostBuilderContext context, IServiceCollection services)
         {
-            var storageProvider = context.Configuration.GetRequiredSection("Storage").GetValue<StorageProvider>("Provider");
+            var storageProvider = ConfigurationManager.Settings.GetRequiredSection("Storage").GetValue<StorageProvider>("Provider");
 
             if (storageProvider == StorageProvider.Filesystem)
             {
-                var options = context.Configuration.GetRequiredSection("Storage:Options").Get<FilesystemStorageOptions>()
+                var options = ConfigurationManager.Settings.GetRequiredSection("Storage:Options").Get<FilesystemStorageOptions>()
                     ?? throw new ApplicationException("Filesystem options are missing from config");
 
                 services.AddSingleton<IStorageProvider, FilesystemStorageProvider>(sp => new FilesystemStorageProvider(options));
@@ -67,6 +69,7 @@ namespace Sahadeva.Dossier.DocumentGenerator
 
             services.AddSingleton<FileManager>();
             services.AddSingleton<PlaceholderHelper>();
+            services.AddSingleton<PlaceholderFactory>();
             services.AddSingleton<DossierGenerator>();
         }
     }
