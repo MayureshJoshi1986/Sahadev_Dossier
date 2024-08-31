@@ -17,7 +17,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
         {
             FixPlaceholdersAcrossRuns(wordDoc);
             IsolatePlaceholders(wordDoc);
-            
+
             return ExtractPlaceholdersFromDocument(wordDoc);
         }
 
@@ -67,7 +67,10 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
 
                         // Add the placeholder itself
                         string placeholder = match.Value;
-                        newElements.Add(new XElement(W.t, placeholder));
+                        newElements.Add(new XElement(
+                            W.t,
+                            new XAttribute(XNamespace.Xml + "space", "preserve"), 
+                            placeholder));
 
                         // Update currentIndex to after the placeholder
                         currentIndex = placeholderStartIndex + placeholderLength;

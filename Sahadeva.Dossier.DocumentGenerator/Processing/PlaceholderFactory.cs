@@ -10,6 +10,10 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
             {
                 return new ValueProcessor(placeholder);
             }
+            else if (placeholder.Text.StartsWith("[AF.MultilineValue:"))
+            {
+                return new MultilineValueProcessor(placeholder);
+            }
             else
             {
                 throw new NotSupportedException($"Unsupported placeholder type: {placeholder.Text}");

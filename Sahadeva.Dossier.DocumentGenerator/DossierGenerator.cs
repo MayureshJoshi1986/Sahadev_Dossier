@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Sahadeva.Dossier.DAL;
 using Sahadeva.Dossier.DocumentGenerator.Extensions;
 using Sahadeva.Dossier.DocumentGenerator.IO;
@@ -44,6 +45,8 @@ namespace Sahadeva.Dossier.DocumentGenerator
                     Console.WriteLine(placeholder.Text); // TODO: For testing
                 }
 
+                RemoveGrammarErrors(wordDoc);
+
                 // Flush changes from the word doc to the memory stream
                 wordDoc.Save();
 
@@ -51,14 +54,31 @@ namespace Sahadeva.Dossier.DocumentGenerator
             }
         }
 
+        /// <summary>
+        /// Removes any grammar error marks in the document.
+        /// This does not affect the document layout
+        /// </summary>
+        /// <param name="wordDoc"></param>
+        public void RemoveGrammarErrors(WordprocessingDocument wordDoc)
+        {
+            var proofErrors = wordDoc.MainDocumentPart!.Document.Descendants<ProofError>().ToList();
+
+            foreach (var error in proofErrors)
+            {
+                error.Remove();
+            }
+        }
+
         private DataSet LoadDataset(DossierJob job)
         {
             var dataset = new DataSet();
-
             var dal = new dossierDAL();
+            
             var clientData = dal.Dossier_FetchClientData_DT2(job.CoverageDossierId);
-
             dataset.AddTableToDataSet(clientData, "ClientData");
+
+            var overviewData = dal.CoverageDossier_OverView_Page(job.CoverageDossierId);
+            dataset.AddTableToDataSet(overviewData, "Overview");
 
             return dataset;
         }

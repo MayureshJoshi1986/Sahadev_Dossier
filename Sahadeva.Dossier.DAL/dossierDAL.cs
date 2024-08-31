@@ -384,24 +384,20 @@ namespace Sahadeva.Dossier.DAL
             return lstNewsArticle;
         }
 
-        public DataSet CoverageDossier_OverView_Page_DT2(Int32 CDID)
+        public DataTable CoverageDossier_OverView_Page(Int32 CDID)
         {
             try
             {
-                DataSet ds = new DataSet();
                 using (DataAccessWrapper DataAccessWrapper = new DataAccessWrapper(DatabaseConstants.ConnectionString))
                 {
-                    using (DbCommand dbcommand = DataAccessWrapper.GetStoredProcCommand(DatabaseConstants.USP_CoverageDossier_OverView_Page_Data_DT2))
+                    using (DbCommand dbcommand = DataAccessWrapper.GetStoredProcCommand(DatabaseConstants.USP_CoverageDossier_OverView_Page_Data_DT1))
                     {
                         DataAccessWrapper.AddInParameter(dbcommand, DatabaseConstants.CDID, DbType.Int32, CDID);
 
-                        DataSet dt = DataAccessWrapper.ExecuteDataSet(dbcommand);
-
-                        ds = dt;
+                        DataSet ds = DataAccessWrapper.ExecuteDataSet(dbcommand);
+                        return ds.Tables[0];
                     }
                 }
-                return ds;
-
             }
 
             catch (Exception ex)

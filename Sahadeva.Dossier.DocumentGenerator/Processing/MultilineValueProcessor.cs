@@ -1,0 +1,80 @@
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System.Data;
+using System.Text.RegularExpressions;
+
+namespace Sahadeva.Dossier.DocumentGenerator.Processing
+{
+    /// <summary>
+    /// Replaces a placeholder with multiline data. Each like of text is placed within a new paragraph
+    /// </summary>
+    internal class MultilineValueProcessor : ValueProcessor
+    {
+        public MultilineValueProcessor(Text placeholder) : base(placeholder)
+        {
+        }
+
+        protected override Regex CreatePlaceholderRegex()
+        {
+            return new Regex(@"(?<=\[AF\.MultilineValue:).*(?=\])", RegexOptions.Compiled);
+        }
+
+        public override void ReplacePlaceholder(WordprocessingDocument wordDoc, DataSet data)
+        {
+            var value = GetDataFromSource(data);
+            ReplaceWithMultilineText(value);
+        }
+
+        /// <summary>
+        /// Multiline text contains \r\n or \n line breaks which are not understood by Word.
+        /// This method converts the line breaks into new paragraphs with text elements.
+        /// </summary>
+        /// <param name="value"></param>
+        private void ReplaceWithMultilineText(string value)
+        {
+            // Split the multiline string by new line characters
+            var lines = value.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+
+            // Get the parent paragraph of the placeholder
+            var placeholderParagraph = Placeholder.Ancestors<Paragraph>().FirstOrDefault();
+
+            if (placeholderParagraph == null)
+            {
+                throw new InvalidOperationException("Placeholder is not within a paragraph.");
+            }
+
+            var newParagraph = new Paragraph();
+            var newRun = new Run();
+
+            // Insert break in the first paragraph to create space
+            newRun.Append(new Break());
+
+            // Iterate through each line and create a new paragraph
+            foreach (var line in lines)
+            {
+                // Preserve the original formatting by copying the placeholder run properties if any
+                if (Placeholder.Parent is Run parentRun && parentRun.RunProperties != null)
+                {
+                    newRun.RunProperties = (RunProperties)parentRun.RunProperties.CloneNode(true);
+                }
+
+                // Add the line of text to the run
+                newRun.Append(new Text(line) { Space = SpaceProcessingModeValues.Preserve });
+
+                // Append the run to the paragraph
+                newParagraph.Append(newRun);
+
+                // Insert the new paragraph after the placeholder paragraph
+                placeholderParagraph.InsertBeforeSelf(newParagraph);
+
+                // Reset the paragraph and run for the next line
+                newParagraph = new Paragraph();
+                newRun = new Run();
+            }
+
+            // Remove the placeholder's parent paragraph (including the placeholder itself)
+            placeholderParagraph.Remove();
+        }
+    }
+}
