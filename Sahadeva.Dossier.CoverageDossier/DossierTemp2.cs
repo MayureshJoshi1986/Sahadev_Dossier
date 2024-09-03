@@ -29,7 +29,7 @@ namespace Sahadeva.Dossier.CoverageDossier
            {
                
 //D:\ADFACTORS\TFS Applications\PR\Workbench\Dossier Template2\Sahadeva_NewsLetter\Sahadeva.Dossier.CoverageDossier\DossierTemp2.cs
-               Dossier.DAL.dossierDAL dal = new DAL.dossierDAL();
+               Dossier.DAL.dossierDAL_Old dal = new DAL.dossierDAL_Old();
 
                string[] sep = new string[] { "\r\n" };
                var stopWatch = Stopwatch.StartNew();
@@ -107,7 +107,7 @@ namespace Sahadeva.Dossier.CoverageDossier
 
        public static void CreateWord(List<NewsArticle> lstNewsArticle, List<NewsArticle_Online> lstNewsArticleOnline, DataTable dtClient, Int32 CDID)
        {
-           Dossier.DAL.dossierDAL dal = new DAL.dossierDAL();
+           Dossier.DAL.dossierDAL_Old dal = new DAL.dossierDAL_Old();
            try
            {
 

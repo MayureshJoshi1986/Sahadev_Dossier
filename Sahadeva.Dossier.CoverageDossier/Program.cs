@@ -35,7 +35,7 @@ namespace Sahadeva.Dossier.CoverageDossier
 
 
 
-                Dossier.DAL.dossierDAL dal = new DAL.dossierDAL();
+                Dossier.DAL.dossierDAL_Old dal = new DAL.dossierDAL_Old();
 
                 DataTable lstCDID = dal.FetchPending_DCIDsToProcess_All();
 
@@ -160,7 +160,7 @@ namespace Sahadeva.Dossier.CoverageDossier
                 string BookMark = string.Empty;
                 //WordAutomationObj.InsertDocumentHeadline("Table of Contents-Print");
 
-                Dossier.DAL.dossierDAL dal = new DAL.dossierDAL();
+                Dossier.DAL.dossierDAL_Old dal = new DAL.dossierDAL_Old();
 
 
                 WordAutomationObj.GotoastLinePoint();

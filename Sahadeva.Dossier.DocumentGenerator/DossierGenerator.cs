@@ -1,12 +1,10 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using Sahadeva.Dossier.DAL;
-using Sahadeva.Dossier.DocumentGenerator.Extensions;
+using Sahadeva.Dossier.DocumentGenerator.Data;
 using Sahadeva.Dossier.DocumentGenerator.IO;
 using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using Sahadeva.Dossier.DocumentGenerator.Processing;
 using Sahadeva.Dossier.Entities;
-using System.Data;
 
 namespace Sahadeva.Dossier.DocumentGenerator
 {
@@ -15,15 +13,18 @@ namespace Sahadeva.Dossier.DocumentGenerator
         private readonly FileManager _fileManager;
         private readonly PlaceholderHelper _placeholderHelper;
         private readonly PlaceholderFactory _placeholderFactory;
+        private readonly DatasetLoader _datasetLoader;
 
         public DossierGenerator(
             FileManager fileManager, 
             PlaceholderHelper placeholderHelper, 
-            PlaceholderFactory placeholderFactory)
+            PlaceholderFactory placeholderFactory,
+            DatasetLoader datasetLoader)
         {
             _fileManager = fileManager;
             _placeholderHelper = placeholderHelper;
             _placeholderFactory = placeholderFactory;
+            _datasetLoader = datasetLoader;
         }
 
         internal async Task ExecuteJob(DossierJob job)
@@ -33,9 +34,7 @@ namespace Sahadeva.Dossier.DocumentGenerator
             {
                 var placeholders = _placeholderHelper.GetPlaceholderMap(wordDoc);
 
-                // TODO: We can optimise here once we know from where to get the data
-                // Currently, we seem to have multiple DAL classes which seem quite similar to each other
-                var data = LoadDataset(job);
+                var data = _datasetLoader.LoadDataset(job, placeholders);
 
                 foreach (var placeholder in placeholders) 
                 {
@@ -67,20 +66,6 @@ namespace Sahadeva.Dossier.DocumentGenerator
             {
                 error.Remove();
             }
-        }
-
-        private DataSet LoadDataset(DossierJob job)
-        {
-            var dataset = new DataSet();
-            var dal = new dossierDAL();
-            
-            var clientData = dal.Dossier_FetchClientData_DT2(job.CoverageDossierId);
-            dataset.AddTableToDataSet(clientData, "ClientData");
-
-            var overviewData = dal.CoverageDossier_OverView_Page(job.CoverageDossierId);
-            dataset.AddTableToDataSet(overviewData, "Overview");
-
-            return dataset;
         }
 
         private async Task<MemoryStream> ReadFromTemplate(string fileName)

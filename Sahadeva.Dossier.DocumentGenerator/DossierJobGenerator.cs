@@ -9,7 +9,7 @@ namespace Sahadeva.Dossier.DocumentGenerator
     {
         public static DossierJob GetJob(string[] args)
         {
-            dossierDAL dal = new dossierDAL();
+            dossierDAL_Old dal = new dossierDAL_Old();
             DataTable lstCDID = dal.FetchPending_DCIDsToProcess_All();
 
             // TODO: Push jobs to a queue, for now just return the first available job
