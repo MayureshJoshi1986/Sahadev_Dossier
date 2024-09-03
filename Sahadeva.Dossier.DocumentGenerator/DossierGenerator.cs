@@ -32,7 +32,7 @@ namespace Sahadeva.Dossier.DocumentGenerator
             using (MemoryStream stream = await ReadFromTemplate(job.TemplateName))
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(stream, true))
             {
-                var placeholders = _placeholderHelper.GetPlaceholderMap(wordDoc);
+                var placeholders = _placeholderHelper.GetPlaceholdersWithDataSource(wordDoc);
 
                 var data = _datasetLoader.LoadDataset(job, placeholders);
 

@@ -12,13 +12,14 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
         /// Looks for placeholders matching [AF.*]
         /// </summary>
         private readonly Regex _placeholder = new Regex(@"\[AF\.[^\]]+\](?!.*\[\[AF\.[^\]]+\]\])");
+        private readonly Regex _placeholderWithDataSource = new Regex(@"\[AF\.(?:Value|MultilineValue|Table):[^\]]+\]");
 
-        internal List<Text> GetPlaceholderMap(WordprocessingDocument wordDoc)
+        internal List<Text> GetPlaceholdersWithDataSource(WordprocessingDocument wordDoc)
         {
             FixPlaceholdersAcrossRuns(wordDoc);
             IsolatePlaceholders(wordDoc);
 
-            return ExtractPlaceholdersFromDocument(wordDoc);
+            return ExtractDataSourcePlaceholdersFromDocument(wordDoc);
         }
 
         /// <summary>
@@ -102,12 +103,12 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
             wordDoc.MainDocumentPart.PutXDocument();
         }
 
-        private List<Text> ExtractPlaceholdersFromDocument(WordprocessingDocument wordDoc)
+        private List<Text> ExtractDataSourcePlaceholdersFromDocument(WordprocessingDocument wordDoc)
         {
             var body = wordDoc.MainDocumentPart?.Document.Body ?? throw new ApplicationException("Invalid document");
 
             return body.Descendants<Text>()
-                .Where(e => _placeholder.IsMatch(e.Text))
+                .Where(e => _placeholderWithDataSource.IsMatch(e.Text))
                 .ToList();
         }
 

@@ -14,6 +14,10 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
             {
                 return new MultilineValueProcessor(placeholder);
             }
+            else if(placeholder.Text.StartsWith("[AF.Table:"))
+            {
+                return new TableProcessor(placeholder);
+            }
             else
             {
                 throw new NotSupportedException($"Unsupported placeholder type: {placeholder.Text}");

@@ -7,7 +7,10 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
 {
     internal abstract class PlaceholderProcessorBase : IPlaceholderProcessor
     {
-        protected readonly Regex PlaceholderRegex;
+        /// <summary>
+        /// Regular expression that will be used to extract the options from the placeholder
+        /// </summary>
+        protected readonly Regex PlaceholderOptionsRegex;
 
         protected Text Placeholder { get; private set; }
 
@@ -16,14 +19,14 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
         public PlaceholderProcessorBase(Text placeholder)
         {
             Placeholder = placeholder;
-            PlaceholderRegex = CreatePlaceholderRegex();
-            ExtractPlaceholderParams();
+            PlaceholderOptionsRegex = GetPlaceholderOptionsRegex();
+            ExtractPlaceholderOptions();
         }
 
         public abstract void ReplacePlaceholder(WordprocessingDocument wordDoc, DataSet data);
 
-        protected abstract Regex CreatePlaceholderRegex();
+        protected abstract Regex GetPlaceholderOptionsRegex();
 
-        protected abstract void ExtractPlaceholderParams();
+        protected abstract void ExtractPlaceholderOptions();
     }
 }

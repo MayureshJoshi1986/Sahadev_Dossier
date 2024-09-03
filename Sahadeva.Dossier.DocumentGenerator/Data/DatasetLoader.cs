@@ -36,20 +36,16 @@ namespace Sahadeva.Dossier.DocumentGenerator.Data
         internal DataSet LoadDataset(DossierJob job, List<Text> placeholders)
         {
             var dataset = new DataSet();
-            DataTable data;
-            
+
             var requiredDataSources = GetUniqueDataSources(placeholders);
 
-            if (requiredDataSources.Contains(DossierDataSet.ClientData.ToString()))
+            foreach (var dataSource in Enum.GetValues<DossierDataSet>())
             {
-                data = _dal.FetchData(job.CoverageDossierId, DossierDataSet.ClientData);
-                dataset.AddTableToDataSet(data, DossierDataSet.ClientData.ToString());
-            }
-
-            if (requiredDataSources.Contains(DossierDataSet.OverviewTable.ToString()))
-            {
-                data = _dal.FetchData(job.CoverageDossierId, DossierDataSet.OverviewTable);
-                dataset.AddTableToDataSet(data, DossierDataSet.OverviewTable.ToString());
+                if (requiredDataSources.Contains(dataSource.ToString()))
+                {
+                    var data = _dal.FetchData(job.CoverageDossierId, dataSource);
+                    dataset.AddTableToDataSet(data, dataSource.ToString());
+                }
             }
 
             return dataset;

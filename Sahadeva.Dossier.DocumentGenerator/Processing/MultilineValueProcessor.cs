@@ -15,7 +15,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
         {
         }
 
-        protected override Regex CreatePlaceholderRegex()
+        protected override Regex GetPlaceholderOptionsRegex()
         {
             return new Regex(@"(?<=\[AF\.MultilineValue:).*(?=\])", RegexOptions.Compiled);
         }
