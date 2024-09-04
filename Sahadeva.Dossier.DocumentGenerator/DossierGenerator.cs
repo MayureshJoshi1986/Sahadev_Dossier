@@ -16,8 +16,8 @@ namespace Sahadeva.Dossier.DocumentGenerator
         private readonly DatasetLoader _datasetLoader;
 
         public DossierGenerator(
-            FileManager fileManager, 
-            PlaceholderHelper placeholderHelper, 
+            FileManager fileManager,
+            PlaceholderHelper placeholderHelper,
             PlaceholderFactory placeholderFactory,
             DatasetLoader datasetLoader)
         {
@@ -36,11 +36,13 @@ namespace Sahadeva.Dossier.DocumentGenerator
 
                 var data = _datasetLoader.LoadDataset(job, placeholders);
 
-                foreach (var placeholder in placeholders) 
+                foreach (var placeholder in placeholders)
                 {
                     var processor = _placeholderFactory.CreateProcessor(placeholder);
                     Console.Write(placeholder.Text + "="); // TODO: For testing
-                    processor.ReplacePlaceholder(wordDoc, data);
+                    var dataTable = data.Tables[processor.DataSourceName]
+                        ?? throw new ApplicationException($"Could not find table for {placeholder.Text} having name {processor.DataSourceName}");
+                    processor.ReplacePlaceholder(wordDoc, dataTable);
                     Console.WriteLine(placeholder.Text); // TODO: For testing
                 }
 
@@ -71,7 +73,10 @@ namespace Sahadeva.Dossier.DocumentGenerator
         private async Task<MemoryStream> ReadFromTemplate(string fileName)
         {
             var content = await _fileManager.GetTemplate(fileName);
-            return new MemoryStream(content);
+            var stream = new MemoryStream();
+            stream.Write(content);
+
+            return stream;
         }
 
         private void WriteFile(MemoryStream stream, string fileName)

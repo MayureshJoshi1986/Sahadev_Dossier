@@ -20,7 +20,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
             return new Regex(@"(?<=\[AF\.MultilineValue:).*(?=\])", RegexOptions.Compiled);
         }
 
-        public override void ReplacePlaceholder(WordprocessingDocument wordDoc, DataSet data)
+        public override void ReplacePlaceholder(WordprocessingDocument wordDoc, DataTable data)
         {
             var value = GetDataFromSource(data);
             ReplaceWithMultilineText(value);

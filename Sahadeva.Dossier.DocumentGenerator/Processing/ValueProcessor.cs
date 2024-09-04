@@ -10,8 +10,6 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
     /// </summary>
     internal class ValueProcessor : PlaceholderProcessorBase
     {
-        private string _tableName = string.Empty;
-
         private string _columnName = string.Empty;
 
         public ValueProcessor(Text placeholder) : base(placeholder)
@@ -34,24 +32,22 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
 
             var config = matches[0].Value.Split(".");
 
-            _tableName = config[0];
+            DataSourceName = config[0];
             _columnName = config[1];
         }
 
-        public override void ReplacePlaceholder(WordprocessingDocument wordDoc, DataSet data)
+        public override void ReplacePlaceholder(WordprocessingDocument wordDoc, DataTable data)
         {
             Placeholder.Text = GetDataFromSource(data);
         }
 
-        protected string GetDataFromSource(DataSet data)
+        protected string GetDataFromSource(DataTable data)
         {
-            var table = data.Tables[_tableName] ?? throw new ApplicationException($"Could not find table '{_tableName}'");
+            if (data.Rows.Count != 1) { throw new ApplicationException($"Attempt to use a single value placeholder '{Expression}' for multiple possible values"); }
 
-            if (table.Rows.Count != 1) { throw new ApplicationException($"Attempt to use a single value placeholder '{Expression}' for multiple possible values"); }
+            if (!data.Columns.Contains(_columnName)) { throw new ApplicationException($"Could not find column '{_columnName}' in '{DataSourceName}"); }
 
-            if (!table.Columns.Contains(_columnName)) { throw new ApplicationException($"Could not find column '{_columnName}' in '{_tableName}"); }
-
-            return data.Tables[_tableName]!.Rows[0][_columnName].ToString()!;
+            return data.Rows[0][_columnName].ToString()!;
         }
     }
 }

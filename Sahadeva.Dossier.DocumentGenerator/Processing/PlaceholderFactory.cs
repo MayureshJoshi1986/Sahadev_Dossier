@@ -4,24 +4,25 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
 {
     internal class PlaceholderFactory
     {
+        private static readonly Dictionary<string, Func<Text, IPlaceholderProcessor>> _processorFactory =
+            new()
+            {
+                { "[AF.Value:", placeholder => new ValueProcessor(placeholder) },
+                { "[AF.MultilineValue:", placeholder => new MultilineValueProcessor(placeholder) },
+                { "[AF.Table:", placeholder => new TableProcessor(placeholder) }
+            };
+
         public IPlaceholderProcessor CreateProcessor(Text placeholder)
         {
-            if (placeholder.Text.StartsWith("[AF.Value:"))
+            foreach (var entry in _processorFactory)
             {
-                return new ValueProcessor(placeholder);
+                if (placeholder.Text.StartsWith(entry.Key))
+                {
+                    return entry.Value(placeholder);
+                }
             }
-            else if (placeholder.Text.StartsWith("[AF.MultilineValue:"))
-            {
-                return new MultilineValueProcessor(placeholder);
-            }
-            else if(placeholder.Text.StartsWith("[AF.Table:"))
-            {
-                return new TableProcessor(placeholder);
-            }
-            else
-            {
-                throw new NotSupportedException($"Unsupported placeholder type: {placeholder.Text}");
-            }
+
+            throw new NotSupportedException($"Unsupported placeholder type: {placeholder.Text}");
         }
     }
 }
