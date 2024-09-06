@@ -18,7 +18,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
 
             return placeholderType switch
             {
-                "RowValue" => new RowValueProcessor(placeholder, _formatterParser),
+                "Table.RowValue" => new TableRowValueProcessor(placeholder, _formatterParser),
                 _ => throw new NotSupportedException($"Unsupported placeholder type: {placeholder.Text}"),
             };
         }

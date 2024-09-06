@@ -11,8 +11,8 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
         /// <summary>
         /// Looks for placeholders matching [AF.*]
         /// </summary>
-        private readonly Regex _placeholder = new Regex(@"\[AF\.[^\]]+\](?!.*\[\[AF\.[^\]]+\]\])");
-        private readonly Regex _placeholderWithDataSource = new Regex(@"\[AF\.(?:Value|MultilineValue|Table):[^\]]+\]");
+        private readonly Regex _placeholder = new Regex(@"\[AF\.[^\]]+\](?!.*\[\[AF\.[^\]]+\]\])", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private readonly Regex _placeholderWithDataSource = new Regex(@"\[AF\.(?:Value|MultilineValue|Table):[^\]]+\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         internal List<Text> GetPlaceholdersWithDataSource(WordprocessingDocument wordDoc)
         {

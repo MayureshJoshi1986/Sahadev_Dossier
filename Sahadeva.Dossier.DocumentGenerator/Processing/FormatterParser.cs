@@ -14,7 +14,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
 
         internal IValueFormatter GetFormatter(string placeholder)
         {
-            var formatterPattern = new Regex(@"\|(?<Formatter>.+)\]$", RegexOptions.Compiled);
+            var formatterPattern = new Regex(@"\|(?<Formatter>.+)\]$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             var formatMatch = formatterPattern.Match(placeholder);
             if (formatMatch.Success)
             {

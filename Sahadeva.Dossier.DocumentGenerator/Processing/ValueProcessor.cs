@@ -48,7 +48,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
 
         protected virtual Regex GetPlaceholderDataSourceRegex()
         {
-            return new Regex(@"\[AF\.(Value):(?<TableName>[^\.\]]+)\.(?<ColumnName>[^\|\]]+)", RegexOptions.Compiled);
+            return new Regex(@"\[AF\.(Value):(?<TableName>[^\.\]]+)\.(?<ColumnName>[^\|\]]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         }
 
         protected string GetDataFromSource(DataTable data)

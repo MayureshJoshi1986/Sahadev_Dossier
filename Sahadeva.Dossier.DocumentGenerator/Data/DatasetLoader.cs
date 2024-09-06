@@ -15,9 +15,9 @@ namespace Sahadeva.Dossier.DocumentGenerator.Data
         /// </summary>
         private readonly List<Regex> _dataSources =
         [
-            new(@"\[AF\.Value:(?<TableName>[^\.]+)\.\w+\]", RegexOptions.Compiled),
-            new(@"\[AF\.MultilineValue:(?<TableName>[^\.]+)\.\w+\]", RegexOptions.Compiled),
-            new(@"\[AF\.Table:(?<TableName>[^\]]+)\]", RegexOptions.Compiled)
+            new(@"\[AF\.Value:(?<TableName>[^\.]+)\.\w+\]", RegexOptions.Compiled | RegexOptions.IgnoreCase),
+            new(@"\[AF\.MultilineValue:(?<TableName>[^\.]+)\.\w+\]", RegexOptions.Compiled | RegexOptions.IgnoreCase),
+            new(@"\[AF\.Table:(?<TableName>[^\]]+)\]", RegexOptions.Compiled | RegexOptions.IgnoreCase)
         ];
 
         private readonly DossierDAL _dal;

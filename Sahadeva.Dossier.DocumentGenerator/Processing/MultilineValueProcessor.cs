@@ -22,7 +22,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
 
         protected override Regex GetPlaceholderDataSourceRegex()
         {
-            return new Regex(@"\[AF\.(MultilineValue):(?<TableName>[^\.\]]+)\.(?<ColumnName>[^\|\]]+)", RegexOptions.Compiled);
+            return new Regex(@"\[AF\.(MultilineValue):(?<TableName>[^\.\]]+)\.(?<ColumnName>[^\|\]]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         }
 
         /// <summary>

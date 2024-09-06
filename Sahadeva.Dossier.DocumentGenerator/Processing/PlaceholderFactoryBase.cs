@@ -18,7 +18,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
         /// <returns></returns>
         protected string GetPlaceholderType(string placeholder)
         {
-            var placeholderTypePattern = new Regex(@"\[AF\.(?<Type>[^\.:]+)", RegexOptions.Compiled);
+            var placeholderTypePattern = new Regex(@"\[AF\.(?<Type>[^\[\]:]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             var match = placeholderTypePattern.Match(placeholder);
             if (match.Success)
             {

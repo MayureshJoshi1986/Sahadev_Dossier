@@ -4,20 +4,20 @@ using System.Text.RegularExpressions;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Processing
 {
-    internal class RowValueProcessor : PlaceholderProcessorBase<DataRow>
+    internal class TableRowValueProcessor : PlaceholderProcessorBase<DataRow>
     {
         protected string ColumnName { get; private set; } = string.Empty;
 
         private readonly FormatterParser _formatterParser;
 
-        public RowValueProcessor(Text placeholder, FormatterParser formatterParser) : base(placeholder)
+        public TableRowValueProcessor(Text placeholder, FormatterParser formatterParser) : base(placeholder)
         {
             _formatterParser = formatterParser;
         }
 
         public override void ParsePlaceholder()
         {
-            var match = Regex.Match(Placeholder.Text, @"(?<=\[AF\.RowValue:)[^;\|\]]+");
+            var match = Regex.Match(Placeholder.Text, @"(?<=\[AF\.Table\.RowValue:)[^;\|\]]+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
             if (match.Success)
             {

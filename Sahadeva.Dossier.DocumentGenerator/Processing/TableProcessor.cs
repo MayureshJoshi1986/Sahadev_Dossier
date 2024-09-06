@@ -8,7 +8,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
     {
         public string TableName { get; private set; } = string.Empty;
 
-        private readonly Regex _placeholderDataSourceRegex = new Regex(@"(?<=\[AF\.Table:)[^\]]+", RegexOptions.Compiled);
+        private readonly Regex _placeholderDataSourceRegex = new Regex(@"(?<=\[AF\.Table:)[^\]]+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         
         private readonly TablePlaceholderFactory _tablePlaceholderFactory;
 
@@ -112,7 +112,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
             var textElements = row.Descendants<Text>();
             foreach (var textElement in textElements)
             {
-                var placeholderMatch = Regex.Match(textElement.Text, @"\[AF\.RowValue:[^\]]+\]");
+                var placeholderMatch = Regex.Match(textElement.Text, @"\[AF\.Table\.RowValue:[^\]]+\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 if (placeholderMatch.Success)
                 {
                     placeholders.Add(placeholderMatch.Value);
@@ -124,7 +124,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
 
         private static string ExtractFilterCriteria(string placeholder)
         {
-            var match = Regex.Match(placeholder, @"\[AF\.RowValue:(?<ColumnName>[^\;]+);Filter=(?<FilterColumn>[^\(]+)\((['‘’](?<FilterValue>[^'‘’]+)['‘’])\)\]");
+            var match = Regex.Match(placeholder, @"\[AF\.Table\.RowValue:(?<ColumnName>[^\;]+);Filter=(?<FilterColumn>[^\(]+)\((['‘’](?<FilterValue>[^'‘’]+)['‘’])\)\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
             if (match.Success)
             {
