@@ -1,5 +1,4 @@
 ﻿using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Data;
 using System.Text.RegularExpressions;
@@ -7,7 +6,7 @@ using System.Text.RegularExpressions;
 namespace Sahadeva.Dossier.DocumentGenerator.Processing
 {
     /// <summary>
-    /// Replaces a placeholder with multiline data. Each like of text is placed within a new paragraph
+    /// Replaces a placeholder with multiline data. Each line of text is placed within a new paragraph
     /// </summary>
     internal class MultilineValueProcessor : ValueProcessor
     {
@@ -15,15 +14,15 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
         {
         }
 
-        protected override Regex GetPlaceholderOptionsRegex()
-        {
-            return new Regex(@"(?<=\[AF\.MultilineValue:).*(?=\])", RegexOptions.Compiled);
-        }
-
-        public override void ReplacePlaceholder(WordprocessingDocument wordDoc, DataTable data)
+        public override void ReplacePlaceholder(DataTable data)
         {
             var value = GetDataFromSource(data);
             ReplaceWithMultilineText(value);
+        }
+
+        protected override Regex GetPlaceholderDataSourceRegex()
+        {
+            return new Regex(@"\[AF\.(MultilineValue):(?<TableName>[^\.\]]+)\.(?<ColumnName>[^\|\]]+)", RegexOptions.Compiled);
         }
 
         /// <summary>

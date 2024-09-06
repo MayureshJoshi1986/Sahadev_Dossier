@@ -1,14 +1,11 @@
-﻿using DocumentFormat.OpenXml.Packaging;
-using System.Data;
-
-namespace Sahadeva.Dossier.DocumentGenerator.Processing
+﻿namespace Sahadeva.Dossier.DocumentGenerator.Processing
 {
-    public interface IPlaceholderProcessor
+    public interface IPlaceholderProcessor<T>
     {
-        string DataSourceName { get; }
-
-        string Expression { get; }
-
-        void ReplacePlaceholder(WordprocessingDocument wordDoc, DataTable data);
+        /// <summary>
+        /// Replace the placeholder text with actual content
+        /// </summary>
+        /// <param name="data"></param>
+        void ReplacePlaceholder(T data);
     }
 }

@@ -40,11 +40,13 @@ namespace Sahadeva.Dossier.DocumentGenerator
                 {
                     var processor = _placeholderFactory.CreateProcessor(placeholder);
                     Console.Write(placeholder.Text + "="); // TODO: For testing
-                    var dataTable = data.Tables[processor.DataSourceName]
-                        ?? throw new ApplicationException($"Could not find table for {placeholder.Text} having name {processor.DataSourceName}");
-                    processor.ReplacePlaceholder(wordDoc, dataTable);
+                    var dataTable = data.Tables[processor.TableName]
+                        ?? throw new ApplicationException($"Could not find table for {placeholder.Text} having name {processor.TableName}");
+                    processor.ReplacePlaceholder(dataTable);
                     Console.WriteLine(placeholder.Text); // TODO: For testing
                 }
+
+                CheckForUnProcessedPlaceholders(wordDoc);
 
                 RemoveGrammarErrors(wordDoc);
 
@@ -55,12 +57,22 @@ namespace Sahadeva.Dossier.DocumentGenerator
             }
         }
 
+        private void CheckForUnProcessedPlaceholders(WordprocessingDocument wordDoc)
+        {
+            var leftOvers = _placeholderHelper.GetAllPlaceholders(wordDoc);
+
+            if (leftOvers.Any())
+            {
+                throw new ApplicationException($"The document contains {leftOvers.Count} unprocessed placeholder(s)");
+            }
+        }
+
         /// <summary>
         /// Removes any grammar error marks in the document.
         /// This does not affect the document layout
         /// </summary>
         /// <param name="wordDoc"></param>
-        public void RemoveGrammarErrors(WordprocessingDocument wordDoc)
+        private void RemoveGrammarErrors(WordprocessingDocument wordDoc)
         {
             var proofErrors = wordDoc.MainDocumentPart!.Document.Descendants<ProofError>().ToList();
 

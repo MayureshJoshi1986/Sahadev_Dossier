@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
 using System.Data;
 using System.Text.RegularExpressions;
 
@@ -8,46 +7,57 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
     /// <summary>
     /// Replaces a placeholder with a single value
     /// </summary>
-    internal class ValueProcessor : PlaceholderProcessorBase
+    internal class ValueProcessor : PlaceholderProcessorBase<DataTable>, IPlaceholderWithDataSource
     {
-        private string _columnName = string.Empty;
+        private readonly FormatterParser? _formatterParser;
+
+        public string TableName { get; private set; } = string.Empty;
+
+        protected string ColumnName { get; private set; } = string.Empty;
 
         public ValueProcessor(Text placeholder) : base(placeholder)
         {
+
         }
 
-        protected override Regex GetPlaceholderOptionsRegex()
+        public ValueProcessor(Text placeholder, FormatterParser formatterParser) : base(placeholder)
         {
-            return new Regex(@"(?<=\[AF\.Value:).*(?=\])", RegexOptions.Compiled);
+            _formatterParser = formatterParser;
         }
 
-        protected override void ExtractPlaceholderOptions()
+        public override void ParsePlaceholder()
         {
-            var matches = PlaceholderOptionsRegex.Matches(Expression);
-
-            if (matches.Count != 1)
+            var match = GetPlaceholderDataSourceRegex().Match(Placeholder.Text);
+            if (match.Success)
             {
-                throw new ApplicationException("Invalid expression for AF.Value. Required [AF.Value:<TableName>.<ColumnName>]");
+                TableName = match.Groups["TableName"].Value;
+                ColumnName = match.Groups["ColumnName"].Value;
             }
-
-            var config = matches[0].Value.Split(".");
-
-            DataSourceName = config[0];
-            _columnName = config[1];
+            else
+            {
+                throw new ApplicationException($"Could not parse {Placeholder.Text}");
+            }
         }
 
-        public override void ReplacePlaceholder(WordprocessingDocument wordDoc, DataTable data)
+        public override void ReplacePlaceholder(DataTable data)
         {
-            Placeholder.Text = GetDataFromSource(data);
+            var value = GetDataFromSource(data);
+            var formatter = _formatterParser?.GetFormatter(Placeholder.Text);
+            Placeholder.Text = formatter?.Format(value) ?? value;
+        }
+
+        protected virtual Regex GetPlaceholderDataSourceRegex()
+        {
+            return new Regex(@"\[AF\.(Value):(?<TableName>[^\.\]]+)\.(?<ColumnName>[^\|\]]+)", RegexOptions.Compiled);
         }
 
         protected string GetDataFromSource(DataTable data)
         {
-            if (data.Rows.Count != 1) { throw new ApplicationException($"Attempt to use a single value placeholder '{Expression}' for multiple possible values"); }
+            if (data.Rows.Count != 1) { throw new ApplicationException($"Attempt to use a single value placeholder '{Placeholder.Text}' for multiple possible values"); }
 
-            if (!data.Columns.Contains(_columnName)) { throw new ApplicationException($"Could not find column '{_columnName}' in '{DataSourceName}"); }
+            if (!data.Columns.Contains(ColumnName)) { throw new ApplicationException($"Could not find column '{ColumnName}' in '{TableName}"); }
 
-            return data.Rows[0][_columnName].ToString()!;
+            return data.Rows[0][ColumnName].ToString()!;
         }
     }
 }

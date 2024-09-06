@@ -22,6 +22,15 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
             return ExtractDataSourcePlaceholdersFromDocument(wordDoc);
         }
 
+        internal List<Text> GetAllPlaceholders(WordprocessingDocument wordDoc)
+        {
+            var body = wordDoc.MainDocumentPart?.Document.Body ?? throw new ApplicationException("Invalid document");
+
+            return body.Descendants<Text>()
+                .Where(e => _placeholder.IsMatch(e.Text))
+                .ToList();
+        }
+
         /// <summary>
         /// In some instances placeholders may be surrounded by text e.g when a placeholder is used in a sentence.
         /// This makes it difficult to replace the entire text node with a value as we would overwrite other text as well.

@@ -2,27 +2,28 @@
 
 namespace Sahadeva.Dossier.DocumentGenerator.Processing
 {
-    internal class PlaceholderFactory
+    internal class PlaceholderFactory : PlaceholderFactoryBase<IPlaceholderWithDataSource>
     {
-        private static readonly Dictionary<string, Func<Text, IPlaceholderProcessor>> _processorFactory =
-            new()
-            {
-                { "[AF.Value:", placeholder => new ValueProcessor(placeholder) },
-                { "[AF.MultilineValue:", placeholder => new MultilineValueProcessor(placeholder) },
-                { "[AF.Table:", placeholder => new TableProcessor(placeholder) }
-            };
+        private readonly FormatterParser _formatterParser;
+        private readonly TablePlaceholderFactory _tablePlaceholderFactory;
 
-        public IPlaceholderProcessor CreateProcessor(Text placeholder)
+        public PlaceholderFactory(FormatterParser formatterParser, TablePlaceholderFactory tablePlaceholderFactory)
         {
-            foreach (var entry in _processorFactory)
-            {
-                if (placeholder.Text.StartsWith(entry.Key))
-                {
-                    return entry.Value(placeholder);
-                }
-            }
+            _formatterParser = formatterParser;
+            _tablePlaceholderFactory = tablePlaceholderFactory;
+        }
 
-            throw new NotSupportedException($"Unsupported placeholder type: {placeholder.Text}");
+        internal override IPlaceholderWithDataSource CreateProcessor(Text placeholder)
+        {
+            var placeholderType = GetPlaceholderType(placeholder.Text);
+
+            return placeholderType switch
+            {
+                "Value" => new ValueProcessor(placeholder, _formatterParser),
+                "MultilineValue" => new MultilineValueProcessor(placeholder),
+                "Table" => new TableProcessor(placeholder, _tablePlaceholderFactory),
+                _ => throw new NotSupportedException($"Unsupported placeholder type: {placeholder.Text}"),
+            };
         }
     }
 }
