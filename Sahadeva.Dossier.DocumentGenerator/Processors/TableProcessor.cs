@@ -1,25 +1,24 @@
 ﻿using DocumentFormat.OpenXml.Wordprocessing;
+using Sahadeva.Dossier.DocumentGenerator.Parsers;
 using System.Data;
 using System.Text.RegularExpressions;
 
-namespace Sahadeva.Dossier.DocumentGenerator.Processing
+namespace Sahadeva.Dossier.DocumentGenerator.Processors
 {
-    internal class TableProcessor : PlaceholderProcessorBase<DataTable>, IPlaceholderWithDataSource
+    internal partial class TableProcessor : DocumentPlaceholderProcessorBase, IPlaceholderWithDataSource
     {
-        public string TableName { get; private set; } = string.Empty;
-
-        private readonly Regex _placeholderDataSourceRegex = new Regex(@"(?<=\[AF\.Table:)[^\]]+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        
         private readonly TablePlaceholderFactory _tablePlaceholderFactory;
+        private readonly PlaceholderParser _placeholderParser;
 
-        public TableProcessor(Text placeholder, TablePlaceholderFactory tablePlaceholderFactory) : base(placeholder)
+        public TableProcessor(Text placeholder, PlaceholderParser placeholderParser, TablePlaceholderFactory tablePlaceholderFactory) : base(placeholder)
         {
             _tablePlaceholderFactory = tablePlaceholderFactory;
+            _placeholderParser = placeholderParser;
         }
 
-        public override void ParsePlaceholder()
+        public override void SetPlaceholderOptions()
         {
-            var match = _placeholderDataSourceRegex.Match(Placeholder.Text);
+            var match = OptionsRegex().Match(Placeholder.Text);
             if (match.Success)
             {
                 TableName = match.Value;
@@ -41,7 +40,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
 
             // The first row of the table MUST contain a Table placeholder which defines the datasource
             var tableNameRow = table.Elements<TableRow>().First();
-            var isValidTableNameRow = tableNameRow.Descendants<Text>().Any(t => _placeholderDataSourceRegex.IsMatch(t.Text));
+            var isValidTableNameRow = tableNameRow.Descendants<Text>().Any(t => OptionsRegex().IsMatch(t.Text));
             if (!isValidTableNameRow) { throw new ApplicationException("The first row of the table MUST contain the table placeholder which defines the datasource"); }
 
             // Delete the first row (row containing the table name) as it is only required for processing and should not appear in the output
@@ -66,7 +65,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
             string filterCriteria = string.Empty;
             foreach (var placeholder in placeholders)
             {
-                var filter = ExtractFilterCriteria(placeholder);
+                var filter = _placeholderParser.GetFilter(placeholder);
                 if (!string.IsNullOrWhiteSpace(filter))
                 {
                     filterCriteria = filter;
@@ -112,7 +111,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
             var textElements = row.Descendants<Text>();
             foreach (var textElement in textElements)
             {
-                var placeholderMatch = Regex.Match(textElement.Text, @"\[AF\.Table\.RowValue:[^\]]+\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                var placeholderMatch = RowPlaceholders().Match(textElement.Text);
                 if (placeholderMatch.Success)
                 {
                     placeholders.Add(placeholderMatch.Value);
@@ -122,19 +121,10 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
             return placeholders;
         }
 
-        private static string ExtractFilterCriteria(string placeholder)
-        {
-            var match = Regex.Match(placeholder, @"\[AF\.Table\.RowValue:(?<ColumnName>[^\;]+);Filter=(?<FilterColumn>[^\(]+)\((['‘’](?<FilterValue>[^'‘’]+)['‘’])\)\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        [GeneratedRegex(@"(?<=\[AF\.Table:)[^\]]+", RegexOptions.Compiled | RegexOptions.IgnoreCase)]
+        private static partial Regex OptionsRegex();
 
-            if (match.Success)
-            {
-                var columnName = match.Groups["FilterColumn"].Value;
-                var value = match.Groups["FilterValue"].Value;
-                return $"{columnName} = '{value}'";
-            }
-
-            // Return empty filter if no match
-            return string.Empty;
-        }
+        [GeneratedRegex(@"\[AF\.Table\.[^\]]+\]", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+        private static partial Regex RowPlaceholders();
     }
 }

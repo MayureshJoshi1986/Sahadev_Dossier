@@ -5,15 +5,15 @@ VisualStudioVersion = 17.10.35201.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sahadeva_NewsLetter", "Sahadeva_NewsLetter\Sahadeva_NewsLetter.csproj", "{C83F3415-96FD-444C-ACA3-ECA63D1385CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sahadeva.Dossier.Common", "Sahadeva.Dossier.Common\Sahadeva.Dossier.Common.csproj", "{1B5CA057-7C61-45A7-BFC8-D8673302F7DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sahadeva.Dossier.Common", "Sahadeva.Dossier.Common\Sahadeva.Dossier.Common.csproj", "{1B5CA057-7C61-45A7-BFC8-D8673302F7DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sahadeva.Dossier.DAL", "Sahadeva.Dossier.DAL\Sahadeva.Dossier.DAL.csproj", "{8AA44DCA-811E-453A-9997-34F3958CE3BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sahadeva.Dossier.DAL", "Sahadeva.Dossier.DAL\Sahadeva.Dossier.DAL.csproj", "{8AA44DCA-811E-453A-9997-34F3958CE3BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sahadeva.Dossier.Entities", "Sahadeva.Dossier.Entities\Sahadeva.Dossier.Entities.csproj", "{F8A30C0B-86EB-47F0-9491-1093E04D7682}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sahadeva.Dossier.Entities", "Sahadeva.Dossier.Entities\Sahadeva.Dossier.Entities.csproj", "{F8A30C0B-86EB-47F0-9491-1093E04D7682}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sahadeva.Dossier.CoverageDossier", "Sahadeva.Dossier.CoverageDossier\Sahadeva.Dossier.CoverageDossier.csproj", "{5F2704E3-1479-498E-804C-8796072DFFBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sahadeva.Dossier.DocumentGenerator", "Sahadeva.Dossier.DocumentGenerator\Sahadeva.Dossier.DocumentGenerator.csproj", "{5535C5CA-BE2E-44D4-80C4-E9580AC57D33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sahadeva.Dossier.DocumentGenerator", "Sahadeva.Dossier.DocumentGenerator\Sahadeva.Dossier.DocumentGenerator.csproj", "{5535C5CA-BE2E-44D4-80C4-E9580AC57D33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,5 +90,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8589C14D-32CF-421C-8ED4-B9F7ECD8A902}
 	EndGlobalSection
 EndGlobal

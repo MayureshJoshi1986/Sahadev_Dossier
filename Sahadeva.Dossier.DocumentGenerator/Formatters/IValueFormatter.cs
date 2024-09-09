@@ -1,4 +1,4 @@
-﻿namespace Sahadeva.Dossier.DocumentGenerator.Formatting
+﻿namespace Sahadeva.Dossier.DocumentGenerator.Formatters
 {
     internal interface IValueFormatter
     {

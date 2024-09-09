@@ -3,26 +3,26 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using System.Data;
 using System.Text.RegularExpressions;
 
-namespace Sahadeva.Dossier.DocumentGenerator.Processing
+namespace Sahadeva.Dossier.DocumentGenerator.Processors
 {
     /// <summary>
     /// Replaces a placeholder with multiline data. Each line of text is placed within a new paragraph
     /// </summary>
-    internal class MultilineValueProcessor : ValueProcessor
+    internal partial class DocumentMultilineValueProcessor : DocumentValueProcessor
     {
-        public MultilineValueProcessor(Text placeholder) : base(placeholder)
+        public DocumentMultilineValueProcessor(Text placeholder) : base(placeholder)
         {
         }
 
         public override void ReplacePlaceholder(DataTable data)
         {
-            var value = GetDataFromSource(data);
+            var value = GetValueFromSource(data);
             ReplaceWithMultilineText(value);
         }
 
-        protected override Regex GetPlaceholderDataSourceRegex()
+        protected override Regex GetPlaceholderOptionsRegex()
         {
-            return new Regex(@"\[AF\.(MultilineValue):(?<TableName>[^\.\]]+)\.(?<ColumnName>[^\|\]]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            return OptionsRegex();
         }
 
         /// <summary>
@@ -75,5 +75,8 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processing
             // Remove the placeholder's parent paragraph (including the placeholder itself)
             placeholderParagraph.Remove();
         }
+
+        [GeneratedRegex(@"\[AF\.(MultilineValue):(?<TableName>[^\.\]]+)\.(?<ColumnName>[^\|\]]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase)]
+        private static partial Regex OptionsRegex();
     }
 }

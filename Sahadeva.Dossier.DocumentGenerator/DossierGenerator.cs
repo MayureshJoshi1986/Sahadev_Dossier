@@ -3,7 +3,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using Sahadeva.Dossier.DocumentGenerator.Data;
 using Sahadeva.Dossier.DocumentGenerator.IO;
 using Sahadeva.Dossier.DocumentGenerator.OpenXml;
-using Sahadeva.Dossier.DocumentGenerator.Processing;
+using Sahadeva.Dossier.DocumentGenerator.Processors;
 using Sahadeva.Dossier.Entities;
 
 namespace Sahadeva.Dossier.DocumentGenerator

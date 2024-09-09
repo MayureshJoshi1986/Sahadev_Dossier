@@ -4,10 +4,11 @@ using Microsoft.Extensions.Hosting;
 using Sahadeva.Dossier.DAL;
 using Sahadeva.Dossier.DocumentGenerator.Configuration;
 using Sahadeva.Dossier.DocumentGenerator.Data;
-using Sahadeva.Dossier.DocumentGenerator.Formatting;
+using Sahadeva.Dossier.DocumentGenerator.Formatters;
 using Sahadeva.Dossier.DocumentGenerator.IO;
 using Sahadeva.Dossier.DocumentGenerator.OpenXml;
-using Sahadeva.Dossier.DocumentGenerator.Processing;
+using Sahadeva.Dossier.DocumentGenerator.Parsers;
+using Sahadeva.Dossier.DocumentGenerator.Processors;
 using Sahadeva.Dossier.DocumentGenerator.Storage;
 using ConfigurationManager = Sahadeva.Dossier.Common.Configuration.ConfigurationManager;
 
@@ -72,10 +73,10 @@ namespace Sahadeva.Dossier.DocumentGenerator
 
             services.AddSingleton<FileManager>();
             services.AddSingleton<PlaceholderHelper>();
+            services.AddSingleton<PlaceholderParser>();
             services.AddSingleton<PlaceholderFactory>();
             services.AddSingleton<FormatterFactory>();
             services.AddSingleton<TablePlaceholderFactory>();
-            services.AddSingleton<FormatterParser>();
             services.AddSingleton<DatasetLoader>();
             services.AddSingleton<DossierDAL>();
             services.AddSingleton<DossierGenerator>();
