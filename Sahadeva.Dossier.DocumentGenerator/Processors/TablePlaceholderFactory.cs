@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
+﻿using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.Extensions.DependencyInjection;
 using Sahadeva.Dossier.DocumentGenerator.Parsers;
 
@@ -15,13 +16,14 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             _serviceProvider = serviceProvider;
         }
 
-        internal ITablePlaceholderProcessor CreateProcessor(Text placeholder)
+        internal ITablePlaceholderProcessor CreateProcessor(Text placeholder, WordprocessingDocument document)
         {
             var placeholderType = _placeholderParser.GetPlaceholderType(placeholder.Text);
 
             return placeholderType switch
             {
                 "Table.Value" => ActivatorUtilities.CreateInstance<TableValueProcessor>(_serviceProvider, placeholder),
+                "Table.Url" => ActivatorUtilities.CreateInstance<TableUrlProcessor>(_serviceProvider, placeholder, document),
                 _ => throw new NotSupportedException($"Unsupported placeholder type: {placeholder.Text}"),
             };
         }

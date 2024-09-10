@@ -1,0 +1,42 @@
+﻿using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System.Data;
+using System.Text.RegularExpressions;
+
+namespace Sahadeva.Dossier.DocumentGenerator.Processors
+{
+    internal partial class TableUrlProcessor : UrlProcessorBase, ITablePlaceholderProcessor
+    {
+        private readonly WordprocessingDocument _document;
+
+        public TableUrlProcessor(Text placeholder, WordprocessingDocument document) : base(placeholder, document)
+        {
+            _document = document;
+        }
+
+        public void ReplacePlaceholder(DataRow data)
+        {
+            if (string.IsNullOrWhiteSpace(LinkColumnName) || !data.Table.Columns.Contains(LinkColumnName)) { throw new ApplicationException($"Column name missing or invalid: '{LinkColumnName}'"); }
+            if (string.IsNullOrWhiteSpace(DisplayColumnName) || !data.Table.Columns.Contains(DisplayColumnName)) { throw new ApplicationException($"Column name missing or invalid: '{DisplayColumnName}'"); }
+            
+            ReplacePlaceholderWithUrl(data[LinkColumnName].ToString()!, data[DisplayColumnName].ToString()!);
+        }
+
+        public override void SetPlaceholderOptions()
+        {
+            var match = OptionsRegex().Match(Placeholder.Text);
+            if (match.Success)
+            {
+                LinkColumnName = match.Groups["LinkColumn"].Value;
+                DisplayColumnName = match.Groups["DisplayColumn"].Value;
+            }
+            else
+            {
+                throw new ApplicationException($"Could not parse {Placeholder.Text}");
+            }
+        }
+
+        [GeneratedRegex(@"\[AF\.Table\.Url:(?<LinkColumn>[^\],]+),(?<DisplayColumn>[^\]]+)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+        private static partial Regex OptionsRegex();
+    }
+}

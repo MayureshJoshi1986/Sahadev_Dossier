@@ -30,36 +30,44 @@ namespace Sahadeva.Dossier.DocumentGenerator
         internal async Task ExecuteJob(DossierJob job)
         {
             using (MemoryStream stream = await ReadFromTemplate(job.TemplateName))
-            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(stream, true))
+            using (WordprocessingDocument document = WordprocessingDocument.Open(stream, true))
             {
-                var placeholders = _placeholderHelper.GetPlaceholdersWithDataSource(wordDoc);
+                var placeholders = _placeholderHelper.GetPlaceholdersWithDataSource(document);
 
                 var data = _datasetLoader.LoadDataset(job, placeholders);
 
                 foreach (var placeholder in placeholders)
                 {
-                    var processor = _placeholderFactory.CreateProcessor(placeholder);
+                    var processor = _placeholderFactory.CreateProcessor(placeholder, document);
+                    
                     Console.Write(placeholder.Text + "="); // TODO: For testing
+                    
                     var dataTable = data.Tables[processor.TableName]
                         ?? throw new ApplicationException($"Could not find table for {placeholder.Text} having name {processor.TableName}");
                     processor.ReplacePlaceholder(dataTable);
+
                     Console.WriteLine(placeholder.Text); // TODO: For testing
                 }
 
-                CheckForUnProcessedPlaceholders(wordDoc);
+                CheckForUnProcessedPlaceholders(document);
 
-                RemoveGrammarErrors(wordDoc);
+                RemoveGrammarErrors(document);
 
                 // Flush changes from the word doc to the memory stream
-                wordDoc.Save();
+                document.Save();
 
                 WriteFile(stream, job.TemplateName);
             }
         }
 
-        private void CheckForUnProcessedPlaceholders(WordprocessingDocument wordDoc)
+        /// <summary>
+        /// Verify that we do not have any unprocessed placdeholders in the document
+        /// </summary>
+        /// <param name="document"></param>
+        /// <exception cref="ApplicationException"></exception>
+        private void CheckForUnProcessedPlaceholders(WordprocessingDocument document)
         {
-            var leftOvers = _placeholderHelper.GetAllPlaceholders(wordDoc);
+            var leftOvers = _placeholderHelper.GetAllPlaceholders(document);
 
             if (leftOvers.Any())
             {
@@ -71,10 +79,10 @@ namespace Sahadeva.Dossier.DocumentGenerator
         /// Removes any grammar error marks in the document.
         /// This does not affect the document layout
         /// </summary>
-        /// <param name="wordDoc"></param>
-        private void RemoveGrammarErrors(WordprocessingDocument wordDoc)
+        /// <param name="document"></param>
+        private void RemoveGrammarErrors(WordprocessingDocument document)
         {
-            var proofErrors = wordDoc.MainDocumentPart!.Document.Descendants<ProofError>().ToList();
+            var proofErrors = document.MainDocumentPart!.Document.Descendants<ProofError>().ToList();
 
             foreach (var error in proofErrors)
             {

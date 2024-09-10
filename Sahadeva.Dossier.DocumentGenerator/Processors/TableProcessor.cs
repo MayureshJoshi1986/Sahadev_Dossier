@@ -1,19 +1,27 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
+﻿using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Sahadeva.Dossier.DocumentGenerator.Parsers;
 using System.Data;
 using System.Text.RegularExpressions;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Processors
 {
-    internal partial class TableProcessor : DocumentPlaceholderProcessorBase, IPlaceholderWithDataSource
+    internal partial class TableProcessor : PlaceholderProcessorBase, IPlaceholderWithDataSource
     {
         private readonly TablePlaceholderFactory _tablePlaceholderFactory;
         private readonly PlaceholderParser _placeholderParser;
+        private readonly WordprocessingDocument _document;
 
-        public TableProcessor(Text placeholder, PlaceholderParser placeholderParser, TablePlaceholderFactory tablePlaceholderFactory) : base(placeholder)
+        public string TableName { get; private set; } = string.Empty;
+
+        public TableProcessor(Text placeholder,
+            PlaceholderParser placeholderParser, 
+            TablePlaceholderFactory tablePlaceholderFactory, 
+            WordprocessingDocument document) : base(placeholder)
         {
             _tablePlaceholderFactory = tablePlaceholderFactory;
             _placeholderParser = placeholderParser;
+            _document = document;
         }
 
         public override void SetPlaceholderOptions()
@@ -29,7 +37,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             }
         }
 
-        public override void ReplacePlaceholder(DataTable data)
+        public void ReplacePlaceholder(DataTable data)
         {
             // Ensure that the Table placeholder is correctly placed within a table
             var table = Placeholder.Ancestors<Table>().FirstOrDefault()
@@ -92,7 +100,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
                     // Check if this is a placeholder node
                     if (placeholders.TryGetValue(textNode.Text, out var placeholder))
                     {
-                        var tablePlaceholder = _tablePlaceholderFactory.CreateProcessor(textNode);
+                        var tablePlaceholder = _tablePlaceholderFactory.CreateProcessor(textNode, _document);
                         tablePlaceholder.ReplacePlaceholder(dataRow);
                     }
                 }

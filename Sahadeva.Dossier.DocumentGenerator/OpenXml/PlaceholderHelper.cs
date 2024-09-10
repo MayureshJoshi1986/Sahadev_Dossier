@@ -12,8 +12,14 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
         /// Looks for placeholders matching [AF.*]
         /// </summary>
         private readonly Regex _placeholder = new Regex(@"\[AF\.[^\]]+\](?!.*\[\[AF\.[^\]]+\]\])", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly Regex _placeholderWithDataSource = new Regex(@"\[AF\.(?:Value|MultilineValue|Table):[^\]]+\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private readonly Regex _placeholderWithDataSource = new Regex(@"\[AF\.(?:Value|MultilineValue|Table|Url):[^\]]+\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        /// <summary>
+        /// Only searches for placeholders that contain a data source i.e TableName.
+        /// Children of Tables, Sections etc are ignored
+        /// </summary>
+        /// <param name="wordDoc"></param>
+        /// <returns></returns>
         internal List<Text> GetPlaceholdersWithDataSource(WordprocessingDocument wordDoc)
         {
             FixPlaceholdersAcrossRuns(wordDoc);
@@ -22,6 +28,12 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
             return ExtractDataSourcePlaceholdersFromDocument(wordDoc);
         }
 
+        /// <summary>
+        /// Gets all the placeholders in the document template
+        /// </summary>
+        /// <param name="wordDoc"></param>
+        /// <returns></returns>
+        /// <exception cref="ApplicationException"></exception>
         internal List<Text> GetAllPlaceholders(WordprocessingDocument wordDoc)
         {
             var body = wordDoc.MainDocumentPart?.Document.Body ?? throw new ApplicationException("Invalid document");
@@ -112,6 +124,12 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
             wordDoc.MainDocumentPart.PutXDocument();
         }
 
+        /// <summary>
+        /// Extracts all placeholders that define a Table data source
+        /// </summary>
+        /// <param name="wordDoc"></param>
+        /// <returns></returns>
+        /// <exception cref="ApplicationException"></exception>
         private List<Text> ExtractDataSourcePlaceholdersFromDocument(WordprocessingDocument wordDoc)
         {
             var body = wordDoc.MainDocumentPart?.Document.Body ?? throw new ApplicationException("Invalid document");

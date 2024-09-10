@@ -5,9 +5,14 @@ using System.Text.RegularExpressions;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Processors
 {
-    internal partial class DocumentValueProcessor : DocumentPlaceholderProcessorBase, IPlaceholderWithDataSource
+    /// <summary>
+    /// Replaces a value at the document level. The target data source should contain exactly once row of data
+    /// </summary>
+    internal partial class DocumentValueProcessor : PlaceholderProcessorBase, IPlaceholderWithDataSource
     {
         private readonly FormatterFactory? _formatterFactory;
+
+        public string TableName { get; private set; } = string.Empty;
 
         protected string ColumnName { get; private set; } = string.Empty;
 
@@ -40,7 +45,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             return OptionsRegex();
         }
 
-        public override void ReplacePlaceholder(DataTable data)
+        public virtual void ReplacePlaceholder(DataTable data)
         {
             var value = GetValueFromSource(data);
             var formatter = _formatterFactory?.CreateFormatter(Placeholder);

@@ -5,6 +5,9 @@ using System.Text.RegularExpressions;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Processors
 {
+    /// <summary>
+    /// Replaces a value within the table. This placeholder is only valid in the context of a table.
+    /// </summary>
     internal partial class TableValueProcessor : PlaceholderProcessorBase, ITablePlaceholderProcessor
     {
         private readonly FormatterFactory _formatterFactory;
