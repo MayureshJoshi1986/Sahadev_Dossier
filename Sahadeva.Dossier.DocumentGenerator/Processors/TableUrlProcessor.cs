@@ -36,7 +36,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             }
         }
 
-        [GeneratedRegex(@"\[AF\.Table\.Url:(?<LinkColumn>[^\],]+),(?<DisplayColumn>[^\]]+)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+        [GeneratedRegex(@"\[AF\.(?:Table|Section)\.Url:(?<LinkColumn>[^\],]+),(?<DisplayColumn>[^\]]+)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
         private static partial Regex OptionsRegex();
     }
 }

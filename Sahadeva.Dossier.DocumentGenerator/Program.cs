@@ -72,6 +72,7 @@ namespace Sahadeva.Dossier.DocumentGenerator
             }
 
             services.AddSingleton<FileManager>();
+            services.AddSingleton<DocumentHelper>();
             services.AddSingleton<PlaceholderHelper>();
             services.AddSingleton<PlaceholderParser>();
             services.AddSingleton<PlaceholderFactory>();

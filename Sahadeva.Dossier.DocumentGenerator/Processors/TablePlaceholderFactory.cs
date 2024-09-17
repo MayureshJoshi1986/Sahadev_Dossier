@@ -24,7 +24,9 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             {
                 "Table.Value" => ActivatorUtilities.CreateInstance<TableValueProcessor>(_serviceProvider, placeholder),
                 "Table.Url" => ActivatorUtilities.CreateInstance<TableUrlProcessor>(_serviceProvider, placeholder, document),
-                _ => throw new NotSupportedException($"Unsupported placeholder type: {placeholder.Text}"),
+                "Section.Value" => ActivatorUtilities.CreateInstance<TableValueProcessor>(_serviceProvider, placeholder),
+                "Section.Url" => ActivatorUtilities.CreateInstance<TableUrlProcessor>(_serviceProvider, placeholder, document),
+                _ => throw new NotSupportedException($"Unsupported placeholder type: {placeholderType} found in {placeholder.Text}"),
             };
         }
     }

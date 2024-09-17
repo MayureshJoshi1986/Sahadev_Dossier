@@ -10,10 +10,10 @@ namespace Sahadeva.Dossier.DAL
         ClientData,
         OverviewTable,
         OverviewSummary,
-        PrintContent,
-        PrintOnline,
-        DetailPrint,
-        DetailOnline,
+        PrintTable,
+        OnlineTable,
+        PrintDetail,
+        OnlineDetail,
     }
 
     public class DossierDAL
@@ -23,10 +23,10 @@ namespace Sahadeva.Dossier.DAL
             { DossierDataSet.ClientData, "Fetch_CoverPage_Section" },
             { DossierDataSet.OverviewTable, "Fetch_OverviewTable_Section" },
             { DossierDataSet.OverviewSummary, "Fetch_OverviewSummary_Section" },
-            { DossierDataSet.PrintContent, "Fetch_TableContentPrint_Section" },
-            { DossierDataSet.PrintOnline, "Fetch_TableContentOnline_Section" },
-            { DossierDataSet.DetailPrint, "Fetch_ArticleDetailPrint_Section" },
-            { DossierDataSet.DetailOnline, "Fetch_ArticleDetailOnline_Section" },
+            { DossierDataSet.PrintTable, "Fetch_TableContentPrint_Section" },
+            { DossierDataSet.OnlineTable, "Fetch_TableContentOnline_Section" },
+            { DossierDataSet.PrintDetail, "Fetch_ArticleDetailPrint_Section" },
+            { DossierDataSet.OnlineDetail, "Fetch_ArticleDetailOnline_Section" },
         };
 
         public DataTable FetchData(int coverageDossierId, DossierDataSet dataSet)

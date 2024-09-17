@@ -119,7 +119,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             var textElements = row.Descendants<Text>();
             foreach (var textElement in textElements)
             {
-                var placeholderMatch = RowPlaceholders().Match(textElement.Text);
+                var placeholderMatch = RowPlaceholderRegex().Match(textElement.Text);
                 if (placeholderMatch.Success)
                 {
                     placeholders.Add(placeholderMatch.Value);
@@ -133,6 +133,6 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
         private static partial Regex OptionsRegex();
 
         [GeneratedRegex(@"\[AF\.Table\.[^\]]+\]", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
-        private static partial Regex RowPlaceholders();
+        private static partial Regex RowPlaceholderRegex();
     }
 }

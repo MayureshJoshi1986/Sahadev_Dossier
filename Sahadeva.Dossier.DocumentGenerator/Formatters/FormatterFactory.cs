@@ -1,6 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Wordprocessing;
 using Sahadeva.Dossier.DocumentGenerator.Parsers;
-using Sahadeva.Dossier.DocumentGenerator.Formatters;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Formatters
 {

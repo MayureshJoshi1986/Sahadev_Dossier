@@ -10,17 +10,20 @@ namespace Sahadeva.Dossier.DocumentGenerator
 {
     internal class DossierGenerator
     {
+        private readonly DocumentHelper _documentHelper;
         private readonly FileManager _fileManager;
         private readonly PlaceholderHelper _placeholderHelper;
         private readonly PlaceholderFactory _placeholderFactory;
         private readonly DatasetLoader _datasetLoader;
 
         public DossierGenerator(
+            DocumentHelper documentHelper,
             FileManager fileManager,
             PlaceholderHelper placeholderHelper,
             PlaceholderFactory placeholderFactory,
             DatasetLoader datasetLoader)
         {
+            _documentHelper = documentHelper;
             _fileManager = fileManager;
             _placeholderHelper = placeholderHelper;
             _placeholderFactory = placeholderFactory;
@@ -32,6 +35,8 @@ namespace Sahadeva.Dossier.DocumentGenerator
             using (MemoryStream stream = await ReadFromTemplate(job.TemplateName))
             using (WordprocessingDocument document = WordprocessingDocument.Open(stream, true))
             {
+                _documentHelper.StripTrackingInfo(document);
+
                 var placeholders = _placeholderHelper.GetPlaceholdersWithDataSource(document);
 
                 var data = _datasetLoader.LoadDataset(job, placeholders);
@@ -39,9 +44,9 @@ namespace Sahadeva.Dossier.DocumentGenerator
                 foreach (var placeholder in placeholders)
                 {
                     var processor = _placeholderFactory.CreateProcessor(placeholder, document);
-                    
+
                     Console.Write(placeholder.Text + "="); // TODO: For testing
-                    
+
                     var dataTable = data.Tables[processor.TableName]
                         ?? throw new ApplicationException($"Could not find table for {placeholder.Text} having name {processor.TableName}");
                     processor.ReplacePlaceholder(dataTable);
@@ -49,9 +54,9 @@ namespace Sahadeva.Dossier.DocumentGenerator
                     Console.WriteLine(placeholder.Text); // TODO: For testing
                 }
 
-                CheckForUnProcessedPlaceholders(document);
+                //CheckForUnProcessedPlaceholders(document);
 
-                RemoveGrammarErrors(document);
+                _documentHelper.RemoveGrammarErrors(document);
 
                 // Flush changes from the word doc to the memory stream
                 document.Save();
@@ -72,21 +77,6 @@ namespace Sahadeva.Dossier.DocumentGenerator
             if (leftOvers.Any())
             {
                 throw new ApplicationException($"The document contains {leftOvers.Count} unprocessed placeholder(s)");
-            }
-        }
-
-        /// <summary>
-        /// Removes any grammar error marks in the document.
-        /// This does not affect the document layout
-        /// </summary>
-        /// <param name="document"></param>
-        private void RemoveGrammarErrors(WordprocessingDocument document)
-        {
-            var proofErrors = document.MainDocumentPart!.Document.Descendants<ProofError>().ToList();
-
-            foreach (var error in proofErrors)
-            {
-                error.Remove();
             }
         }
 

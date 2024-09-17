@@ -7,19 +7,8 @@ using System.Text.RegularExpressions;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Data
 {
-    internal class DatasetLoader
+    internal partial class DatasetLoader
     {
-        /// <summary>
-        /// List of placeholders that will contain datasource information.
-        /// Only placeholders listed here will be scanned
-        /// </summary>
-        private readonly List<Regex> _dataSources =
-        [
-            new(@"\[AF\.Value:(?<TableName>[^\.]+)\.\w+\]", RegexOptions.Compiled | RegexOptions.IgnoreCase),
-            new(@"\[AF\.MultilineValue:(?<TableName>[^\.]+)\.\w+\]", RegexOptions.Compiled | RegexOptions.IgnoreCase),
-            new(@"\[AF\.Table:(?<TableName>[^\]]+)\]", RegexOptions.Compiled | RegexOptions.IgnoreCase)
-        ];
-
         private readonly DossierDAL _dal;
 
         public DatasetLoader(DossierDAL dal)
@@ -57,19 +46,18 @@ namespace Sahadeva.Dossier.DocumentGenerator.Data
 
             foreach (var placeholder in placeholders)
             {
-                foreach (var regex in _dataSources)
-                {
-                    var match = regex.Match(placeholder.Text);
+                var match = DataSourceRegex().Match(placeholder.Text);
 
-                    if (match.Success)
-                    {
-                        tableNames.Add(match.Groups["TableName"].Value);
-                        break;
-                    }
+                if (match.Success)
+                {
+                    tableNames.Add(match.Groups["TableName"].Value);
                 }
             }
 
             return tableNames;
         }
+
+        [GeneratedRegex(@"\[AF\.[^\:]+\:(?<TableName>[^\.\;\]]+)", RegexOptions.Compiled)]
+        private static partial Regex DataSourceRegex();
     }
 }

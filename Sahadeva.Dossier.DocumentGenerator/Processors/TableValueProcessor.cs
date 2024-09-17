@@ -46,7 +46,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             return data[ColumnName].ToString()!;
         }
 
-        [GeneratedRegex(@"(?<=\[AF\.Table\.Value:)[^;\|\]]+", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+        [GeneratedRegex(@"(?<=\[AF\.(?:Table|Section)\.Value:)[^;\|\]]+", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
         private static partial Regex OptionsRegex();
     }
 }

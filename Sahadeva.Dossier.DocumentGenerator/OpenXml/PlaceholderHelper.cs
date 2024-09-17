@@ -12,7 +12,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
         /// Looks for placeholders matching [AF.*]
         /// </summary>
         private readonly Regex _placeholder = new Regex(@"\[AF\.[^\]]+\](?!.*\[\[AF\.[^\]]+\]\])", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly Regex _placeholderWithDataSource = new Regex(@"\[AF\.(?:Value|MultilineValue|Table|Url):[^\]]+\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private readonly Regex _placeholderWithDataSource = new Regex(@"\[AF\.(?:Value|MultilineValue|Table|Url|Section\.Start):[^\]]+\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Only searches for placeholders that contain a data source i.e TableName.

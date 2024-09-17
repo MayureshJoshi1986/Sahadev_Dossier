@@ -24,8 +24,9 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             {
                 "Value" => ActivatorUtilities.CreateInstance<DocumentValueProcessor>(_serviceProvider, placeholder),
                 "MultilineValue" => ActivatorUtilities.CreateInstance<DocumentMultilineValueProcessor>(_serviceProvider, placeholder),
-                "Table" => ActivatorUtilities.CreateInstance<TableProcessor>(_serviceProvider, placeholder, document),
                 "Url" => ActivatorUtilities.CreateInstance<DocumentUrlProcessor>(_serviceProvider, placeholder, document),
+                "Table" => ActivatorUtilities.CreateInstance<TableProcessor>(_serviceProvider, placeholder, document),
+                "Section.Start" => ActivatorUtilities.CreateInstance<SectionProcessor>(_serviceProvider, placeholder, document),
                 _ => throw new NotSupportedException($"Unsupported placeholder type: {placeholder.Text}"),
             };
         }
