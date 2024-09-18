@@ -86,23 +86,49 @@ do not need to specify the table name.
 
 **Example:** `[AF.Table:PrintContent]`
 
-Inserts a table based on the `PrintContent` table. This placeholder will be followed by child placeholders that iterate over the rows of the table.
+Inserts a table based on the `PrintContent` table. See also, [Child Placeholders](#child-placeholders)
 
-#### 2.4.1 Child placeholders
-
-`AF.Table` supports the following child placeholders  which can be placed in any cell within the table
-
-* `AF.Table.Value:<ColumnName>` - insert a value from a specific column within a table context.
-* `AF.Table.Url:<LinkColumn>,<DisplayColumn>` - insert a hyperlink using the link and display columns.
-
-#### 2.4.2 Row filters
+#### 2.4.1 Row filters
 
 You can also use row filters to generate sections in a table or iterate through a subset of the rows.
 Ideally, a row filter would be defined on the first placeholder in a row but it could also be specified anywhere within a row.
 The number of results in the filtered dataset will determine the number of times the row is cloned. If multiple filters are defined in a row, only the 1st one is processed.
 
-**Example:** `[AF.Table.Value:ColumnName;Filter=Column2('Some value')]`
+**Example:** `[AF.Row.Value:ColumnName;Filter=Column2('Some value')]`
 
+---
+
+### 2.5 Section Placeholder `[AF.Section.<Start|End>]`
+
+The `AF.Section.Start` placeholder is used to mark the beginning of a section that will be cloned for each of the rows. 
+The section start and end markers should be placed in their own paragraphs before and after the content that needs to be replicated. 
+The section markers will be removed by the processor once the placeholders have been processed. 
+The data table context is available for all child placeholders inside the section which means that child placeholders
+do not need to specify the table name.
+
+**Syntax:** `[AF.Section.Start:<TableName>]`, `[AF.Section.End]`
+
+- **TableName**: The name of the data source table.
+
+**Example:** `[AF.Section.Start:PrintContent]`
+
+Repeats a section for each row in the `PrintContent` table. See also, [Child Placeholders](#child-placeholders)
+
+#### 2.5.1 Row filters
+
+You can also use row filters to iterate through a subset of the rows. The number of results in the filtered dataset will determine 
+the number of times the section is cloned.
+
+**Example:** `[AF.Section.Start:PrintContent;Filter=Column2('Some value')]`
+
+---
+
+#### 2.6 Scoped placeholders
+
+ Scoped placeholders like `AF.Table` and `AF.Section` also support child placeholders.
+
+* `AF.Row.Value:<ColumnName>` - insert a value from a specific column in the given context.
+* `AF.Row.Url:<LinkColumn>,<DisplayColumn>` - insert a hyperlink using the link and display columns.
 
 ---
 

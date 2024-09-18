@@ -77,7 +77,7 @@ namespace Sahadeva.Dossier.DocumentGenerator
             services.AddSingleton<PlaceholderParser>();
             services.AddSingleton<PlaceholderFactory>();
             services.AddSingleton<FormatterFactory>();
-            services.AddSingleton<TablePlaceholderFactory>();
+            services.AddSingleton<RowPlaceholderFactory>();
             services.AddSingleton<DatasetLoader>();
             services.AddSingleton<DossierDAL>();
             services.AddSingleton<DossierGenerator>();

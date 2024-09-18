@@ -8,7 +8,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
 {
     internal partial class TableProcessor : PlaceholderProcessorBase, IPlaceholderWithDataSource
     {
-        private readonly TablePlaceholderFactory _tablePlaceholderFactory;
+        private readonly RowPlaceholderFactory _tablePlaceholderFactory;
         private readonly PlaceholderParser _placeholderParser;
         private readonly WordprocessingDocument _document;
 
@@ -16,7 +16,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
 
         public TableProcessor(Text placeholder,
             PlaceholderParser placeholderParser, 
-            TablePlaceholderFactory tablePlaceholderFactory, 
+            RowPlaceholderFactory tablePlaceholderFactory, 
             WordprocessingDocument document) : base(placeholder)
         {
             _tablePlaceholderFactory = tablePlaceholderFactory;
@@ -132,7 +132,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
         [GeneratedRegex(@"(?<=\[AF\.Table:)[^\]]+", RegexOptions.Compiled | RegexOptions.IgnoreCase)]
         private static partial Regex OptionsRegex();
 
-        [GeneratedRegex(@"\[AF\.Table\.[^\]]+\]", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+        [GeneratedRegex(@"\[AF\.Row\.[^\]]+\]", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
         private static partial Regex RowPlaceholderRegex();
     }
 }

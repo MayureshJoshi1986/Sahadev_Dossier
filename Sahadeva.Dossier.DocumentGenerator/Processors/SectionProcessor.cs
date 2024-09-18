@@ -11,12 +11,12 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
         Text placeholder,
         WordprocessingDocument document,
         PlaceholderParser placeholderParser,
-        TablePlaceholderFactory tablePlaceholderFactory
+        RowPlaceholderFactory rowPlaceholderFactory
             ) : PlaceholderProcessorBase(placeholder), IPlaceholderWithDataSource
     {
         private readonly WordprocessingDocument _document = document;
         private readonly PlaceholderParser _placeholderParser = placeholderParser;
-        private readonly TablePlaceholderFactory _tablePlaceholderFactory = tablePlaceholderFactory;
+        private readonly RowPlaceholderFactory _rowPlaceholderFactory = rowPlaceholderFactory;
 
         public string TableName { get; private set; } = string.Empty;
 
@@ -45,7 +45,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
                     // Check if this is a placeholder node
                     if (placeholders.TryGetValue(textNode.Text, out var placeholder))
                     {
-                        var tablePlaceholder = _tablePlaceholderFactory.CreateProcessor(textNode, _document);
+                        var tablePlaceholder = _rowPlaceholderFactory.CreateProcessor(textNode, _document);
                         tablePlaceholder.ReplacePlaceholder(dataRow);
                     }
                 }
@@ -142,7 +142,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
         private static partial Regex SectionEndRegex();
 
 
-        [GeneratedRegex(@"\[AF\.Section\.[^\]]+\]", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+        [GeneratedRegex(@"\[AF\.Row\.[^\]]+\]", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
         private static partial Regex SectionPlaceholderRegex();
     }
 }

@@ -8,13 +8,13 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
     /// <summary>
     /// Replaces a value within the table. This placeholder is only valid in the context of a table.
     /// </summary>
-    internal partial class TableValueProcessor : PlaceholderProcessorBase, ITablePlaceholderProcessor
+    internal partial class RowValueProcessor : PlaceholderProcessorBase, IRowPlaceholderProcessor
     {
         private readonly FormatterFactory _formatterFactory;
 
         protected string ColumnName { get; private set; } = string.Empty;
 
-        public TableValueProcessor(Text placeholder, FormatterFactory formatterFactory) : base(placeholder)
+        public RowValueProcessor(Text placeholder, FormatterFactory formatterFactory) : base(placeholder)
         {
             _formatterFactory = formatterFactory;
         }
@@ -46,7 +46,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             return data[ColumnName].ToString()!;
         }
 
-        [GeneratedRegex(@"(?<=\[AF\.(?:Table|Section)\.Value:)[^;\|\]]+", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+        [GeneratedRegex(@"(?<=\[AF\.Row\.Value:)[^;\|\]]+", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
         private static partial Regex OptionsRegex();
     }
 }

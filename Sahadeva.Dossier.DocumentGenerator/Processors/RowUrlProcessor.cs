@@ -5,11 +5,11 @@ using System.Text.RegularExpressions;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Processors
 {
-    internal partial class TableUrlProcessor : UrlProcessorBase, ITablePlaceholderProcessor
+    internal partial class RowUrlProcessor : UrlProcessorBase, IRowPlaceholderProcessor
     {
         private readonly WordprocessingDocument _document;
 
-        public TableUrlProcessor(Text placeholder, WordprocessingDocument document) : base(placeholder, document)
+        public RowUrlProcessor(Text placeholder, WordprocessingDocument document) : base(placeholder, document)
         {
             _document = document;
         }
@@ -36,7 +36,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             }
         }
 
-        [GeneratedRegex(@"\[AF\.(?:Table|Section)\.Url:(?<LinkColumn>[^\],]+),(?<DisplayColumn>[^\]]+)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+        [GeneratedRegex(@"\[AF\.Row\.Url:(?<LinkColumn>[^\],]+),(?<DisplayColumn>[^\]]+)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
         private static partial Regex OptionsRegex();
     }
 }
