@@ -15,16 +15,16 @@ namespace Sahadeva.Dossier.DocumentGenerator.Parsers
             return string.Empty;
         }
 
-        internal string GetFormatter(string placeholder)
+        internal KeyValuePair<string, string>? GetFormatter(string placeholder)
         {
             var formatterPattern = FormatterPattern();
             var formatMatch = formatterPattern.Match(placeholder);
             if (formatMatch.Success)
             {
-                return formatMatch.Groups["Formatter"].Value;
+                return new(formatMatch.Groups["FormatterName"].Value, formatMatch.Groups["FormatterValue"].Value);
             }
 
-            return string.Empty;
+            return null;
         }
 
         internal string GetFilter(string placeholder)
@@ -45,8 +45,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Parsers
         [GeneratedRegex(@"\[AF\.(?<Type>[^\[\]:]+)", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
         private static partial Regex PlaceholderTypePattern();
 
-
-        [GeneratedRegex(@"\|(?<Formatter>.+)\]$", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+        [GeneratedRegex(@"\|\s*(?<FormatterName>[a-zA-Z]+)\s*\(['‘’](?<FormatterValue>[^'‘’]+)['‘’]\)", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
         private static partial Regex FormatterPattern();
 
         [GeneratedRegex(@";Filter=(?<FilterColumn>[^\(]+)\((['‘’](?<FilterValue>[^'‘’]+)['‘’])\)", RegexOptions.IgnoreCase | RegexOptions.Compiled)]

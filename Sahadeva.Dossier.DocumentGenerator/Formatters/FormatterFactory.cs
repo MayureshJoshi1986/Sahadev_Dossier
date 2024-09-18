@@ -1,9 +1,10 @@
 ﻿using DocumentFormat.OpenXml.Wordprocessing;
 using Sahadeva.Dossier.DocumentGenerator.Parsers;
+using System.Text.RegularExpressions;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Formatters
 {
-    internal class FormatterFactory
+    internal partial class FormatterFactory
     {
         private readonly PlaceholderParser _placeholderParser;
 
@@ -16,18 +17,20 @@ namespace Sahadeva.Dossier.DocumentGenerator.Formatters
         {
             var formatSpecifier = _placeholderParser.GetFormatter(placeholder.Text);
 
-            if (string.IsNullOrWhiteSpace(formatSpecifier))
+            if (formatSpecifier == null)
             {
                 return new NoOpFormatter();
             }
 
-            if (formatSpecifier.StartsWith("Date(", StringComparison.InvariantCultureIgnoreCase))
+            if (formatSpecifier!.Value.Key.StartsWith("Date", StringComparison.InvariantCultureIgnoreCase))
             {
-                var format = formatSpecifier.Substring(5, formatSpecifier.Length - 6);
-                return new DateFormatter(format);
+                return new DateFormatter(formatSpecifier.Value.Value);
             }
 
             throw new NotSupportedException($"Unsupported format specifier: {formatSpecifier}");
         }
+
+        [GeneratedRegex(@"\|\s*(?<FormatterName>[a-zA-Z]+)\('(?<FormatterValue>[^']+)'\)", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+        private static partial Regex FormatterRegex();
     }
 }

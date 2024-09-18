@@ -141,7 +141,7 @@ Placeholders can be extended with formatters to change the appearance of the dat
 - **Date Formatter**: Formats date values in the given format.
 
 **Example:** 
-* `[AF.Value:ClientData.FromDate|date(dd-MM-yyyy)]`
-* `[AF.Table.Value:ArticleDate|date(dd-MM-yyyy)]`
+* `[AF.Value:ClientData.FromDate|date('dd-MM-yyyy')]`
+* `[AF.Row.Value:ArticleDate|date('dd-MM-yyyy')]`
  
 ---
