@@ -191,7 +191,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
             document.MainDocumentPart.PutXDocument();
         }
 
-        [GeneratedRegex(@"\[AF\.(?:Value|MultilineValue|Table|Url|Section\.Start|Screenshot):[^\]]+\]", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+        [GeneratedRegex(@"\[AF\.(?:Value|MultilineValue|Table|Url|Section\.Start|Screenshot|Graph):[^\]]+\]", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
         private static partial Regex PlaceholderWithDataSource();
 
 

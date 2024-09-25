@@ -49,7 +49,7 @@ namespace Sahadeva.Dossier.DocumentGenerator
 
                 foreach (var placeholder in placeholders)
                 {
-                    var processor = _placeholderFactory.CreateProcessor(placeholder, document);
+                    var processor = _placeholderFactory.CreateProcessor(job, placeholder, document);
 
                     var dataTable = data.Tables[processor.TableName]
                         ?? throw new ApplicationException($"Could not find table for {placeholder.Text} having name {processor.TableName}");

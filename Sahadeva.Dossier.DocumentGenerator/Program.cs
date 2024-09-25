@@ -83,12 +83,14 @@ namespace Sahadeva.Dossier.DocumentGenerator
             services.AddSingleton<RowPlaceholderFactory>();
             services.AddSingleton<DatasetLoader>();
             services.AddSingleton<ScreenshotService>();
+            services.AddSingleton<GraphService>();
             services.AddSingleton<DossierDAL>();
             services.AddSingleton<ImageDownloader>();
 
             services.AddTransient<DossierGenerator>();
 
             services.AddOptions<ScreenshotOptions>().Bind(configuration.GetSection(ScreenshotOptions.ConfigKey));
+            services.AddOptions<GraphOptions>().Bind(configuration.GetSection(GraphOptions.ConfigKey));
         }
     }
 }

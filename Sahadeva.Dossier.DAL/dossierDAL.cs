@@ -7,26 +7,30 @@ namespace Sahadeva.Dossier.DAL
 {
     public enum DossierDataSet
     {
-        ClientData,
+        CoverPage = 1,
         OverviewTable,
         OverviewSummary,
-        PrintTable,
-        OnlineTable,
-        PrintDetail,
-        OnlineDetail,
+        ClientGraph,
+        TableContentPrint,
+        ArticleDetailPrint,
+        TableContentOnline,
+        ArticleDetailOnline,
+        CompetitorGraph
     }
 
     public class DossierDAL
     {
         private readonly Dictionary<DossierDataSet, string> _dataSetMap = new Dictionary<DossierDataSet, string> 
         {
-            { DossierDataSet.ClientData, "Fetch_CoverPage_Section" },
+            { DossierDataSet.CoverPage, "Fetch_CoverPage_Section" },
             { DossierDataSet.OverviewTable, "Fetch_OverviewTable_Section" },
             { DossierDataSet.OverviewSummary, "Fetch_OverviewSummary_Section" },
-            { DossierDataSet.PrintTable, "Fetch_TableContentPrint_Section" },
-            { DossierDataSet.OnlineTable, "Fetch_TableContentOnline_Section" },
-            { DossierDataSet.PrintDetail, "Fetch_ArticleDetailPrint_Section" },
-            { DossierDataSet.OnlineDetail, "Fetch_ArticleDetailOnline_Section" },
+            { DossierDataSet.ClientGraph, "Fetch_ClientGraph_Section" },
+            { DossierDataSet.TableContentPrint, "Fetch_TableContentPrint_Section" },
+            { DossierDataSet.TableContentOnline, "Fetch_TableContentOnline_Section" },
+            { DossierDataSet.ArticleDetailPrint, "Fetch_ArticleDetailPrint_Section" },
+            { DossierDataSet.ArticleDetailOnline, "Fetch_ArticleDetailOnline_Section" },
+            { DossierDataSet.CompetitorGraph, "Fetch_CompetitorGraph_Section" }
         };
 
         public DataTable FetchData(int coverageDossierId, DossierDataSet dataSet)
