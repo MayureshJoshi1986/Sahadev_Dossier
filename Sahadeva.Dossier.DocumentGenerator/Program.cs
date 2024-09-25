@@ -5,6 +5,7 @@ using Sahadeva.Dossier.DAL;
 using Sahadeva.Dossier.DocumentGenerator.Configuration;
 using Sahadeva.Dossier.DocumentGenerator.Data;
 using Sahadeva.Dossier.DocumentGenerator.Formatters;
+using Sahadeva.Dossier.DocumentGenerator.Imaging;
 using Sahadeva.Dossier.DocumentGenerator.IO;
 using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using Sahadeva.Dossier.DocumentGenerator.Parsers;
@@ -22,7 +23,6 @@ namespace Sahadeva.Dossier.DocumentGenerator
         {
             InitialiseHost();
 
-            var dossierGenerator = _appHost.Services.GetRequiredService<DossierGenerator>();
 
             // we want this to keep running and processing jobs as they become available
             //while (true)
@@ -33,6 +33,8 @@ namespace Sahadeva.Dossier.DocumentGenerator
                 // TODO: Read jobs from the queue
                 // TODO: This is temp to simulate getting a job from the queue
                 var job = DossierJobGenerator.GetJob(args);
+
+                var dossierGenerator = _appHost.Services.GetRequiredService<DossierGenerator>();
                 await dossierGenerator.ExecuteJob(job);
             }
             catch (Exception ex)
@@ -57,11 +59,12 @@ namespace Sahadeva.Dossier.DocumentGenerator
 
         static void GetApplicationServices(HostBuilderContext context, IServiceCollection services)
         {
-            var storageProvider = ConfigurationManager.Settings.GetRequiredSection("Storage").GetValue<StorageProvider>("Provider");
+            var configuration = ConfigurationManager.Settings;
+            var storageProvider = configuration.GetRequiredSection("Storage").GetValue<StorageProvider>("Provider");
 
             if (storageProvider == StorageProvider.Filesystem)
             {
-                var options = ConfigurationManager.Settings.GetRequiredSection("Storage:Options").Get<FilesystemStorageOptions>()
+                var options = configuration.GetRequiredSection("Storage:Options").Get<FilesystemStorageOptions>()
                     ?? throw new ApplicationException("Filesystem options are missing from config");
 
                 services.AddSingleton<IStorageProvider, FilesystemStorageProvider>(sp => new FilesystemStorageProvider(options));
@@ -79,8 +82,13 @@ namespace Sahadeva.Dossier.DocumentGenerator
             services.AddSingleton<FormatterFactory>();
             services.AddSingleton<RowPlaceholderFactory>();
             services.AddSingleton<DatasetLoader>();
+            services.AddSingleton<ScreenshotService>();
             services.AddSingleton<DossierDAL>();
-            services.AddSingleton<DossierGenerator>();
+            services.AddSingleton<ImageDownloader>();
+
+            services.AddTransient<DossierGenerator>();
+
+            services.AddOptions<ScreenshotOptions>().Bind(configuration.GetSection(ScreenshotOptions.ConfigKey));
         }
     }
 }

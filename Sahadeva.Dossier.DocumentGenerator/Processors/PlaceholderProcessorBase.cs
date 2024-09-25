@@ -1,12 +1,13 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
+﻿using DocumentFormat.OpenXml;
+using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Processors
 {
-    internal abstract class PlaceholderProcessorBase
+    internal abstract class PlaceholderProcessorBase<T> where T : OpenXmlElement
     {
-        protected Text Placeholder { get; private set; }
+        protected Placeholder<T> Placeholder { get; private set; }
 
-        public PlaceholderProcessorBase(Text placeholder)
+        public PlaceholderProcessorBase(Placeholder<T> placeholder)
         {
             Placeholder = placeholder;
             SetPlaceholderOptions();

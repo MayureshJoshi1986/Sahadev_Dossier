@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using Sahadeva.Dossier.DAL;
+﻿using Sahadeva.Dossier.DAL;
 using Sahadeva.Dossier.DocumentGenerator.Extensions;
 using Sahadeva.Dossier.Entities;
 using System.Data;
@@ -22,7 +21,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Data
         /// <param name="job"></param>
         /// <param name="placeholders"></param>
         /// <returns>A DataSet which contains all the data required for building the dossier</returns>
-        internal DataSet LoadDataset(DossierJob job, List<Text> placeholders)
+        internal DataSet LoadDataset(DossierJob job, IEnumerable<string> placeholders)
         {
             var dataset = new DataSet();
 
@@ -40,17 +39,21 @@ namespace Sahadeva.Dossier.DocumentGenerator.Data
             return dataset;
         }
 
-        private HashSet<string> GetUniqueDataSources(List<Text> placeholders)
+        private HashSet<string> GetUniqueDataSources(IEnumerable<string> placeholders)
         {
             var tableNames = new HashSet<string>();
 
             foreach (var placeholder in placeholders)
             {
-                var match = DataSourceRegex().Match(placeholder.Text);
+                Match match = DataSourceRegex().Match(placeholder);
 
                 if (match.Success)
                 {
                     tableNames.Add(match.Groups["TableName"].Value);
+                }
+                else
+                {
+                    throw new ApplicationException($"Do not know how to extract data source information from {placeholder}");
                 }
             }
 

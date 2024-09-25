@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using System.Data;
 using System.Text.RegularExpressions;
 
@@ -10,7 +11,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
     /// </summary>
     internal partial class DocumentMultilineValueProcessor : DocumentValueProcessor
     {
-        public DocumentMultilineValueProcessor(Text placeholder) : base(placeholder)
+        public DocumentMultilineValueProcessor(Placeholder<Text> placeholder) : base(placeholder)
         {
         }
 
@@ -36,7 +37,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             var lines = value.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
 
             // Get the parent paragraph of the placeholder
-            var placeholderParagraph = Placeholder.Ancestors<Paragraph>().FirstOrDefault();
+            var placeholderParagraph = Placeholder.Element.Ancestors<Paragraph>().FirstOrDefault();
 
             if (placeholderParagraph == null)
             {
@@ -53,7 +54,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             foreach (var line in lines)
             {
                 // Preserve the original formatting by copying the placeholder run properties if any
-                if (Placeholder.Parent is Run parentRun && parentRun.RunProperties != null)
+                if (Placeholder.Element.Parent is Run parentRun && parentRun.RunProperties != null)
                 {
                     newRun.RunProperties = (RunProperties)parentRun.RunProperties.CloneNode(true);
                 }

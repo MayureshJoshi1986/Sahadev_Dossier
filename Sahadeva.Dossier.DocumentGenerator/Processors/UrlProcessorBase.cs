@@ -1,10 +1,11 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Processors
 {
-    internal abstract class UrlProcessorBase : PlaceholderProcessorBase
+    internal abstract class UrlProcessorBase : PlaceholderProcessorBase<Text>
     {
         private readonly WordprocessingDocument _document;
 
@@ -12,7 +13,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
 
         protected string DisplayColumnName { get; set; } = string.Empty;
 
-        protected UrlProcessorBase(Text placeholder, WordprocessingDocument document) : base(placeholder)
+        protected UrlProcessorBase(Placeholder<Text> placeholder, WordprocessingDocument document) : base(placeholder)
         {
             _document = document;
         }
@@ -20,7 +21,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
         protected void ReplacePlaceholderWithUrl(string link, string displayText)
         {
             // Get the parent run containing the placeholder
-            var parentRun = Placeholder.Parent as Run;
+            var parentRun = Placeholder.Element.Parent as Run;
             if (parentRun == null) return;
 
             // Preserve the original formatting by copying the placeholder run properties if any
@@ -50,8 +51,8 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
                     ))
             { History = OnOffValue.FromBoolean(true), Id = rel.Id };
 
-            Placeholder.InsertBeforeSelf(hyperlink);
-            Placeholder.Remove();
+            Placeholder.Element.InsertBeforeSelf(hyperlink);
+            Placeholder.Element.Remove();
         }
     }
 }

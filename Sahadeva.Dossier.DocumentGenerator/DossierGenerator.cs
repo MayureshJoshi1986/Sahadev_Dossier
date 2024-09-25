@@ -1,6 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Sahadeva.Dossier.DocumentGenerator.Data;
+using Sahadeva.Dossier.DocumentGenerator.Imaging;
 using Sahadeva.Dossier.DocumentGenerator.IO;
 using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using Sahadeva.Dossier.DocumentGenerator.Processors;
@@ -15,19 +15,22 @@ namespace Sahadeva.Dossier.DocumentGenerator
         private readonly PlaceholderHelper _placeholderHelper;
         private readonly PlaceholderFactory _placeholderFactory;
         private readonly DatasetLoader _datasetLoader;
+        private readonly ImageDownloader _imageDownloader;
 
         public DossierGenerator(
             DocumentHelper documentHelper,
             FileManager fileManager,
             PlaceholderHelper placeholderHelper,
             PlaceholderFactory placeholderFactory,
-            DatasetLoader datasetLoader)
+            DatasetLoader datasetLoader,
+            ImageDownloader imageDownloader)
         {
             _documentHelper = documentHelper;
             _fileManager = fileManager;
             _placeholderHelper = placeholderHelper;
             _placeholderFactory = placeholderFactory;
             _datasetLoader = datasetLoader;
+            _imageDownloader = imageDownloader;
         }
 
         internal async Task ExecuteJob(DossierJob job)
@@ -37,24 +40,26 @@ namespace Sahadeva.Dossier.DocumentGenerator
             {
                 _documentHelper.StripTrackingInfo(document);
 
+                _placeholderHelper.FixPlaceholdersAcrossRuns(document);
+                _placeholderHelper.IsolatePlaceholders(document);
+
                 var placeholders = _placeholderHelper.GetPlaceholdersWithDataSource(document);
 
-                var data = _datasetLoader.LoadDataset(job, placeholders);
+                var data = _datasetLoader.LoadDataset(job, placeholders.Select(p => p.Text));
 
                 foreach (var placeholder in placeholders)
                 {
                     var processor = _placeholderFactory.CreateProcessor(placeholder, document);
 
-                    Console.Write(placeholder.Text + "="); // TODO: For testing
-
                     var dataTable = data.Tables[processor.TableName]
                         ?? throw new ApplicationException($"Could not find table for {placeholder.Text} having name {processor.TableName}");
+                    
                     processor.ReplacePlaceholder(dataTable);
-
-                    Console.WriteLine(placeholder.Text); // TODO: For testing
                 }
 
-                //CheckForUnProcessedPlaceholders(document);
+                await _imageDownloader.DownloadImagesAsync(document);
+
+                CheckForUnProcessedPlaceholders(document);
 
                 _documentHelper.RemoveGrammarErrors(document);
 

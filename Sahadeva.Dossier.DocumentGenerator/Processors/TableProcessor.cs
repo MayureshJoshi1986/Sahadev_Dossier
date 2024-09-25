@@ -1,26 +1,31 @@
-﻿using DocumentFormat.OpenXml.Packaging;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using Sahadeva.Dossier.DocumentGenerator.Parsers;
 using System.Data;
 using System.Text.RegularExpressions;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Processors
 {
-    internal partial class TableProcessor : PlaceholderProcessorBase, IPlaceholderWithDataSource
+    internal partial class TableProcessor : PlaceholderProcessorBase<Text>, IPlaceholderWithDataSource
     {
         private readonly RowPlaceholderFactory _tablePlaceholderFactory;
         private readonly PlaceholderParser _placeholderParser;
+        private readonly PlaceholderHelper _placeholderHelper;
         private readonly WordprocessingDocument _document;
 
         public string TableName { get; private set; } = string.Empty;
 
-        public TableProcessor(Text placeholder,
-            PlaceholderParser placeholderParser, 
-            RowPlaceholderFactory tablePlaceholderFactory, 
+        public TableProcessor(Placeholder<Text> placeholder,
+            PlaceholderParser placeholderParser,
+            PlaceholderHelper placeholderHelper,
+            RowPlaceholderFactory tablePlaceholderFactory,
             WordprocessingDocument document) : base(placeholder)
         {
             _tablePlaceholderFactory = tablePlaceholderFactory;
             _placeholderParser = placeholderParser;
+            _placeholderHelper = placeholderHelper;
             _document = document;
         }
 
@@ -40,7 +45,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
         public void ReplacePlaceholder(DataTable data)
         {
             // Ensure that the Table placeholder is correctly placed within a table
-            var table = Placeholder.Ancestors<Table>().FirstOrDefault()
+            var table = Placeholder.Element.Ancestors<Table>().FirstOrDefault()
                 ?? throw new ApplicationException($"{Placeholder.Text} is only valid inside a table.");
 
             // Currently throwing if we have no data for the table but we could choose to hide he table as well, or define some placeholder text
@@ -64,29 +69,18 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
 
         private void ProcessRow(TableRow row, DataTable dataTable)
         {
-            var placeholders = ExtractRowPlaceholders(row);
+            var templatePlaceholders = _placeholderHelper.GetPlaceholders(RowPlaceholderRegex(), row);
 
             // No placeholders found in this row, nothing to process
-            if (placeholders.Count == 0) { return; }
+            if (templatePlaceholders.Count == 0) { return; }
 
-            // Check if any placeholder in the row has a filter and apply it, ideally it would be the first placeholder in the row
-            string filterCriteria = string.Empty;
-            foreach (var placeholder in placeholders)
-            {
-                var filter = _placeholderParser.GetFilter(placeholder);
-                if (!string.IsNullOrWhiteSpace(filter))
-                {
-                    filterCriteria = filter;
-                    break;
-                }
-            }
-
+            var filterCriteria = GetFilterCriteria(templatePlaceholders);
             DataRow[] filteredRows = filterCriteria.Length > 0 ? dataTable.Select(filterCriteria) : dataTable.Select();
 
             if (filteredRows.Length == 0)
             {
                 // TODO: Should we throw here?
-                Console.WriteLine($"No data found for {placeholders.First()}");
+                Console.WriteLine($"No data found for {filterCriteria}");
             }
 
             foreach (var dataRow in filteredRows)
@@ -94,15 +88,11 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
                 // Create a clone of the template row so that we can replace the placeholders
                 var clone = (TableRow)row.CloneNode(true);
 
-                var textNodes = clone.Descendants<Text>();
-                foreach (var textNode in textNodes)
+                var clonedRowPlaceholders = _placeholderHelper.GetPlaceholders(RowPlaceholderRegex(), clone);
+                foreach (var placeholder in clonedRowPlaceholders)
                 {
-                    // Check if this is a placeholder node
-                    if (placeholders.TryGetValue(textNode.Text, out var placeholder))
-                    {
-                        var tablePlaceholder = _tablePlaceholderFactory.CreateProcessor(textNode, _document);
-                        tablePlaceholder.ReplacePlaceholder(dataRow);
-                    }
+                    var tablePlaceholder = _tablePlaceholderFactory.CreateProcessor(placeholder, _document);
+                    tablePlaceholder.ReplacePlaceholder(dataRow);
                 }
 
                 row.InsertBeforeSelf(clone);
@@ -112,21 +102,19 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             row.Remove();
         }
 
-        private static HashSet<string> ExtractRowPlaceholders(TableRow row)
+        private string GetFilterCriteria(IEnumerable<IPlaceholder<OpenXmlElement>> placeholders)
         {
-            var placeholders = new HashSet<string>();
-
-            var textElements = row.Descendants<Text>();
-            foreach (var textElement in textElements)
+            foreach (var placeholder in placeholders)
             {
-                var placeholderMatch = RowPlaceholderRegex().Match(textElement.Text);
-                if (placeholderMatch.Success)
+                var filter = _placeholderParser.GetFilter(placeholder.Text);
+                if (!string.IsNullOrWhiteSpace(filter))
                 {
-                    placeholders.Add(placeholderMatch.Value);
+                    // Check if any placeholder in the row has a filter and apply it, ideally it would be the first placeholder in the row
+                    return filter;
                 }
             }
 
-            return placeholders;
+            return string.Empty;
         }
 
         [GeneratedRegex(@"(?<=\[AF\.Table:)[^\]]+", RegexOptions.Compiled | RegexOptions.IgnoreCase)]

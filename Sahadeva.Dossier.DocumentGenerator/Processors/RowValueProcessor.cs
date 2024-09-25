@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Wordprocessing;
 using Sahadeva.Dossier.DocumentGenerator.Formatters;
+using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using System.Data;
 using System.Text.RegularExpressions;
 
@@ -8,13 +9,13 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
     /// <summary>
     /// Replaces a value within the table. This placeholder is only valid in the context of a table.
     /// </summary>
-    internal partial class RowValueProcessor : PlaceholderProcessorBase, IRowPlaceholderProcessor
+    internal partial class RowValueProcessor : PlaceholderProcessorBase<Text>, IRowPlaceholderProcessor
     {
         private readonly FormatterFactory _formatterFactory;
 
         protected string ColumnName { get; private set; } = string.Empty;
 
-        public RowValueProcessor(Text placeholder, FormatterFactory formatterFactory) : base(placeholder)
+        public RowValueProcessor(Placeholder<Text> placeholder, FormatterFactory formatterFactory) : base(placeholder)
         {
             _formatterFactory = formatterFactory;
         }
@@ -36,8 +37,8 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
         public void ReplacePlaceholder(DataRow data)
         {
             var value = GetValueFromSource(data);
-            var formatter = _formatterFactory?.CreateFormatter(Placeholder);
-            Placeholder.Text = formatter?.Format(value) ?? value;
+            var formatter = _formatterFactory?.CreateFormatter(Placeholder.Element.Text);
+            Placeholder.Element.Text = formatter?.Format(value) ?? value;
         }
 
         protected string GetValueFromSource(DataRow data)

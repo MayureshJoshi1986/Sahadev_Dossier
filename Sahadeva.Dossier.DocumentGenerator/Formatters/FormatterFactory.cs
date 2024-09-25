@@ -13,9 +13,9 @@ namespace Sahadeva.Dossier.DocumentGenerator.Formatters
             _placeholderParser = placeholderParser;
         }
 
-        internal IValueFormatter CreateFormatter(Text placeholder)
+        internal IValueFormatter CreateFormatter(string placeholder)
         {
-            var formatSpecifier = _placeholderParser.GetFormatter(placeholder.Text);
+            var formatSpecifier = _placeholderParser.GetFormatter(placeholder);
 
             if (formatSpecifier == null)
             {

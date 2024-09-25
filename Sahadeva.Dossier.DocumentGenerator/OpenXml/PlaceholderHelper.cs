@@ -1,4 +1,6 @@
-﻿using DocumentFormat.OpenXml.Packaging;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Drawing.Wordprocessing;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using OpenXmlPowerTools;
 using System.Text.RegularExpressions;
@@ -6,41 +8,59 @@ using System.Xml.Linq;
 
 namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
 {
-    internal class PlaceholderHelper
+    internal interface IPlaceholder<out T> where T : OpenXmlElement
     {
-        /// <summary>
-        /// Looks for placeholders matching [AF.*]
-        /// </summary>
-        private readonly Regex _placeholder = new Regex(@"\[AF\.[^\]]+\](?!.*\[\[AF\.[^\]]+\]\])", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly Regex _placeholderWithDataSource = new Regex(@"\[AF\.(?:Value|MultilineValue|Table|Url|Section\.Start):[^\]]+\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        string Text { get; }
+        T Element { get; }
+    }
+
+    internal class Placeholder<T> : IPlaceholder<T> where T : OpenXmlElement
+    {
+        internal Placeholder(string placeholderText, T placeholderElement)
+        {
+            Text = placeholderText;
+            Element = placeholderElement;
+        }
+
+        public string Text { get; private set; }
+
+        public T Element { get; private set; }
+    }
+
+    internal partial class PlaceholderHelper
+    {
+        private readonly Regex _placeholder = Placeholder();
+        private readonly Regex _placeholderWithDataSource = PlaceholderWithDataSource();
 
         /// <summary>
         /// Only searches for placeholders that contain a data source i.e TableName.
         /// Children of Tables, Sections etc are ignored
         /// </summary>
-        /// <param name="wordDoc"></param>
+        /// <param name="document"></param>
         /// <returns></returns>
-        internal List<Text> GetPlaceholdersWithDataSource(WordprocessingDocument wordDoc)
+        internal List<IPlaceholder<OpenXmlElement>> GetPlaceholdersWithDataSource(WordprocessingDocument document)
         {
-            FixPlaceholdersAcrossRuns(wordDoc);
-            IsolatePlaceholders(wordDoc);
+            var body = document.MainDocumentPart?.Document.Body ?? throw new ApplicationException("Invalid document");
 
-            return ExtractDataSourcePlaceholdersFromDocument(wordDoc);
+            return ExtractPlaceholders(_placeholderWithDataSource, body);
         }
 
         /// <summary>
         /// Gets all the placeholders in the document template
         /// </summary>
-        /// <param name="wordDoc"></param>
+        /// <param name="document"></param>
         /// <returns></returns>
         /// <exception cref="ApplicationException"></exception>
-        internal List<Text> GetAllPlaceholders(WordprocessingDocument wordDoc)
+        internal List<IPlaceholder<OpenXmlElement>> GetAllPlaceholders(WordprocessingDocument document)
         {
-            var body = wordDoc.MainDocumentPart?.Document.Body ?? throw new ApplicationException("Invalid document");
+            var body = document.MainDocumentPart?.Document.Body ?? throw new ApplicationException("Invalid document");
 
-            return body.Descendants<Text>()
-                .Where(e => _placeholder.IsMatch(e.Text))
-                .ToList();
+            return ExtractPlaceholders(_placeholder, body);
+        }
+
+        internal List<IPlaceholder<OpenXmlElement>> GetPlaceholders(Regex regex, IEnumerable<OpenXmlElement> elements)
+        {
+            return ExtractPlaceholders(regex, elements.ToArray());
         }
 
         /// <summary>
@@ -49,11 +69,11 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
         /// This method will ensure that each placeholder sits in its own text node so that when we override/replace the placeholder
         /// it should not result in any data loss.
         /// </summary>
-        /// <param name="wordDoc"></param>
+        /// <param name="document"></param>
         /// <exception cref="NotImplementedException"></exception>
-        private void IsolatePlaceholders(WordprocessingDocument wordDoc)
+        internal void IsolatePlaceholders(WordprocessingDocument document)
         {
-            XDocument xDoc = wordDoc.MainDocumentPart.GetXDocument();
+            XDocument xDoc = document.MainDocumentPart.GetXDocument();
 
             var textElements = xDoc.Descendants(W.t)
                    .Where(e => _placeholder.IsMatch(e.Value));
@@ -91,7 +111,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
                         string placeholder = match.Value;
                         newElements.Add(new XElement(
                             W.t,
-                            new XAttribute(XNamespace.Xml + "space", "preserve"), 
+                            new XAttribute(XNamespace.Xml + "space", "preserve"),
                             placeholder));
 
                         // Update currentIndex to after the placeholder
@@ -121,22 +141,35 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
             }
 
             // Save changes to the document
-            wordDoc.MainDocumentPart.PutXDocument();
+            document.MainDocumentPart.PutXDocument();
         }
 
         /// <summary>
-        /// Extracts all placeholders that define a Table data source
+        /// Extracts all placeholders that match the specified pattern
         /// </summary>
-        /// <param name="wordDoc"></param>
+        /// <param name="document"></param>
+        /// <param name="pattern"></param>
         /// <returns></returns>
         /// <exception cref="ApplicationException"></exception>
-        private List<Text> ExtractDataSourcePlaceholdersFromDocument(WordprocessingDocument wordDoc)
+        private List<IPlaceholder<OpenXmlElement>> ExtractPlaceholders(Regex pattern, params OpenXmlElement[] elements)
         {
-            var body = wordDoc.MainDocumentPart?.Document.Body ?? throw new ApplicationException("Invalid document");
-
-            return body.Descendants<Text>()
-                .Where(e => _placeholderWithDataSource.IsMatch(e.Text))
+            var textPlaceholders = elements.SelectMany(e => e.Descendants<Text>())
+                .Where(e => pattern.IsMatch(e.Text))
+                .Select(e => new Placeholder<Text>(e.Text, e))
                 .ToList();
+
+            var imagePlaceholders = elements.SelectMany(e => e.Descendants<Drawing>())
+                .Where(d => d.Descendants<DocProperties>()
+                             .FirstOrDefault(dp => dp.Description != null && pattern.IsMatch(dp.Description.Value!)) != null
+                )
+                .Select(d =>
+                {
+                    var placeholderText = d.Descendants<DocProperties>().First().Description!.Value!;
+                    return new Placeholder<Drawing>(placeholderText, d);
+                })
+                .ToList();
+
+            return [.. textPlaceholders, .. imagePlaceholders];
         }
 
         /// <summary>
@@ -144,9 +177,9 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
         /// can be identified and replaced more easily.
         /// </summary>
         /// <param name="stream"></param>
-        private void FixPlaceholdersAcrossRuns(WordprocessingDocument wordDoc)
+        internal void FixPlaceholdersAcrossRuns(WordprocessingDocument document)
         {
-            XDocument xDoc = wordDoc.MainDocumentPart.GetXDocument();
+            XDocument xDoc = document.MainDocumentPart.GetXDocument();
 
             var content = xDoc.Descendants(W.p);
             var count = RegexHelper.Replace(
@@ -155,7 +188,18 @@ namespace Sahadeva.Dossier.DocumentGenerator.OpenXml
                 (match) => match.Value);
 
             // Save changes to the document
-            wordDoc.MainDocumentPart.PutXDocument();
+            document.MainDocumentPart.PutXDocument();
         }
+
+        [GeneratedRegex(@"\[AF\.(?:Value|MultilineValue|Table|Url|Section\.Start|Screenshot):[^\]]+\]", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+        private static partial Regex PlaceholderWithDataSource();
+
+
+        /// <summary>
+        /// Looks for placeholders matching [AF.*]
+        /// </summary>
+        // TODO: This should probably check for Row placeholders as well?
+        [GeneratedRegex(@"\[AF\.[^\]]+\](?!.*\[\[AF\.[^\]]+\]\])", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+        private static partial Regex Placeholder();
     }
 }

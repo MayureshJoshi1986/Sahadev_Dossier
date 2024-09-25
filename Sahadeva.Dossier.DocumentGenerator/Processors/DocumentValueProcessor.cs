@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Wordprocessing;
 using Sahadeva.Dossier.DocumentGenerator.Formatters;
+using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using System.Data;
 using System.Text.RegularExpressions;
 
@@ -8,7 +9,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
     /// <summary>
     /// Replaces a value at the document level. The target data source should contain exactly once row of data
     /// </summary>
-    internal partial class DocumentValueProcessor : PlaceholderProcessorBase, IPlaceholderWithDataSource
+    internal partial class DocumentValueProcessor : PlaceholderProcessorBase<Text>, IPlaceholderWithDataSource
     {
         private readonly FormatterFactory? _formatterFactory;
 
@@ -16,12 +17,12 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
 
         protected string ColumnName { get; private set; } = string.Empty;
 
-        public DocumentValueProcessor(Text placeholder) : base(placeholder)
+        public DocumentValueProcessor(Placeholder<Text> placeholder) : base(placeholder)
         {
             _formatterFactory = null;
         }
 
-        public DocumentValueProcessor(Text placeholder, FormatterFactory formatterFactory) : base(placeholder)
+        public DocumentValueProcessor(Placeholder<Text> placeholder, FormatterFactory formatterFactory) : base(placeholder)
         {
             _formatterFactory = formatterFactory;
         }
@@ -48,8 +49,8 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
         public virtual void ReplacePlaceholder(DataTable data)
         {
             var value = GetValueFromSource(data);
-            var formatter = _formatterFactory?.CreateFormatter(Placeholder);
-            Placeholder.Text = formatter?.Format(value) ?? value;
+            var formatter = _formatterFactory?.CreateFormatter(Placeholder.Element.Text);
+            Placeholder.Element.Text = formatter?.Format(value) ?? value;
         }
 
         protected string GetValueFromSource(DataTable data)

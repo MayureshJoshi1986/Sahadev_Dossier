@@ -1,6 +1,7 @@
-﻿using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
 using Microsoft.Extensions.DependencyInjection;
+using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using Sahadeva.Dossier.DocumentGenerator.Parsers;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Processors
@@ -16,7 +17,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             _serviceProvider = serviceProvider;
         }
 
-        internal IPlaceholderWithDataSource CreateProcessor(Text placeholder, WordprocessingDocument document)
+        internal IPlaceholderWithDataSource CreateProcessor<T>(IPlaceholder<T> placeholder, WordprocessingDocument document) where T : OpenXmlElement
         {
             var placeholderType = _placeholderParser.GetPlaceholderType(placeholder.Text);
 
@@ -25,6 +26,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
                 "Value" => ActivatorUtilities.CreateInstance<DocumentValueProcessor>(_serviceProvider, placeholder),
                 "MultilineValue" => ActivatorUtilities.CreateInstance<DocumentMultilineValueProcessor>(_serviceProvider, placeholder),
                 "Url" => ActivatorUtilities.CreateInstance<DocumentUrlProcessor>(_serviceProvider, placeholder, document),
+                "Screenshot" => ActivatorUtilities.CreateInstance<DocumentScreenshotProcessor>(_serviceProvider, placeholder),
                 "Table" => ActivatorUtilities.CreateInstance<TableProcessor>(_serviceProvider, placeholder, document),
                 "Section.Start" => ActivatorUtilities.CreateInstance<SectionProcessor>(_serviceProvider, placeholder, document),
                 _ => throw new NotSupportedException($"Unsupported placeholder type: {placeholder.Text}"),

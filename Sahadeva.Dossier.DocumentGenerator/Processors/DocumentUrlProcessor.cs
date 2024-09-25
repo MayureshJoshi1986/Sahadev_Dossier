@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using System.Data;
 using System.Text.RegularExpressions;
 
@@ -10,7 +11,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
         public string TableName { get; private set; } = string.Empty;
 
 
-        public DocumentUrlProcessor(Text placeholder, WordprocessingDocument document) : base(placeholder, document)
+        public DocumentUrlProcessor(Placeholder<Text> placeholder, WordprocessingDocument document) : base(placeholder, document)
         {
         }
 

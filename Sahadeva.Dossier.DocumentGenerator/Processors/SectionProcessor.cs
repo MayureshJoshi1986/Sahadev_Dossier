@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using Sahadeva.Dossier.DocumentGenerator.Parsers;
 using System.Data;
 using System.Text.RegularExpressions;
@@ -8,14 +9,16 @@ using System.Text.RegularExpressions;
 namespace Sahadeva.Dossier.DocumentGenerator.Processors
 {
     internal partial class SectionProcessor(
-        Text placeholder,
+        Placeholder<Text> placeholder,
         WordprocessingDocument document,
         PlaceholderParser placeholderParser,
+        PlaceholderHelper placeholderHelper,
         RowPlaceholderFactory rowPlaceholderFactory
-            ) : PlaceholderProcessorBase(placeholder), IPlaceholderWithDataSource
+            ) : PlaceholderProcessorBase<Text>(placeholder), IPlaceholderWithDataSource
     {
         private readonly WordprocessingDocument _document = document;
         private readonly PlaceholderParser _placeholderParser = placeholderParser;
+        private readonly PlaceholderHelper _placeholderHelper = placeholderHelper;
         private readonly RowPlaceholderFactory _rowPlaceholderFactory = rowPlaceholderFactory;
 
         public string TableName { get; private set; } = string.Empty;
@@ -27,27 +30,22 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             if (parentParagraph == null) { throw new ApplicationException($"Section placeholders should be placed in its own paragraph. {Placeholder.Text}"); }
 
             var sectionTemplate = GetSectionContent();
-            var placeholders = ExtractSectionPlaceholders(sectionTemplate);
 
             var filter = _placeholderParser.GetFilter(Placeholder.Text);
             DataRow[] filteredRows = filter.Length > 0 ? data.Select(filter) : data.Select();
 
-            //TODO: Remove Take 2
-            foreach (var dataRow in filteredRows.Take(2))
+            foreach (var dataRow in filteredRows)
             {
                 // Create a clone of all the elements in the section template
                 var clones = sectionTemplate.Select(n => n.CloneNode(true)).ToList();
 
-                // Get all text nodes in the cloned section
-                var textNodes = clones.SelectMany(c => c.Descendants<Text>()).ToList();
-                foreach (var textNode in textNodes)
+                ProcessClonedImages(clones);
+
+                var clonedSectionPlaceholders = _placeholderHelper.GetPlaceholders(SectionPlaceholderRegex(), clones);
+                foreach (var placeholder in clonedSectionPlaceholders)
                 {
-                    // Check if this is a placeholder node
-                    if (placeholders.TryGetValue(textNode.Text, out var placeholder))
-                    {
-                        var tablePlaceholder = _rowPlaceholderFactory.CreateProcessor(textNode, _document);
-                        tablePlaceholder.ReplacePlaceholder(dataRow);
-                    }
+                    var processor = _rowPlaceholderFactory.CreateProcessor(placeholder, _document);
+                    processor.ReplacePlaceholder(dataRow);
                 }
 
                 clones.ForEach(n => parentParagraph!.InsertBeforeSelf(n));
@@ -56,23 +54,6 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             // Remove the original placeholder and placeholder content
             parentParagraph.Remove();
             sectionTemplate.ForEach(e => e.Remove());
-        }
-
-        private HashSet<string> ExtractSectionPlaceholders(List<OpenXmlElement> sectionTemplate)
-        {
-            var placeholders = new HashSet<string>();
-
-            var textElements = sectionTemplate.SelectMany(e => e.Descendants<Text>());
-            foreach (var textElement in textElements)
-            {
-                var placeholderMatch = SectionPlaceholderRegex().Match(textElement.Text);
-                if (placeholderMatch.Success)
-                {
-                    placeholders.Add(placeholderMatch.Value);
-                }
-            }
-
-            return placeholders;
         }
 
         public override void SetPlaceholderOptions()
@@ -85,6 +66,35 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             else
             {
                 throw new ApplicationException($"Could not parse {Placeholder.Text}");
+            }
+        }
+
+        /// <summary>
+        /// Processes cloned elements to create new ImageParts for cloned images
+        /// </summary>
+        private void ProcessClonedImages(List<OpenXmlElement> clonedElements)
+        {
+            var drawings = clonedElements.SelectMany(e => e.Descendants<Drawing>()).ToList();
+            foreach (var drawing in drawings)
+            {
+                var blip = drawing.Descendants<DocumentFormat.OpenXml.Drawing.Blip>().FirstOrDefault();
+                if (blip != null && blip.Embed != null)
+                {
+                    // Get the old image part
+                    var oldImagePart = (ImagePart)_document.MainDocumentPart!.GetPartById(blip.Embed!.Value!);
+
+                    // Create a new image part for the cloned image
+                    var newImagePart = _document.MainDocumentPart.AddImagePart(ImagePartType.Jpeg);
+
+                    // Copy the data from the old image part to the new image part
+                    using (var stream = oldImagePart.GetStream())
+                    {
+                        newImagePart.FeedData(stream);
+                    }
+
+                    // Update the Blip embed ID to point to the new image part
+                    blip.Embed = _document.MainDocumentPart.GetIdOfPart(newImagePart);
+                }
             }
         }
 
@@ -123,7 +133,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
         /// <returns></returns>
         private Paragraph? GetParentParagraph()
         {
-            OpenXmlElement? parentElement = Placeholder.Parent;
+            OpenXmlElement? parentElement = Placeholder.Element.Parent;
 
             // Traverse up the hierarchy until we find a Paragraph element
             while (parentElement != null && !(parentElement is Paragraph))
