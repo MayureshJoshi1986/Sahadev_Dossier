@@ -34,7 +34,8 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             var filter = _placeholderParser.GetFilter(Placeholder.Text);
             DataRow[] filteredRows = filter.Length > 0 ? data.Select(filter) : data.Select();
 
-            foreach (var dataRow in filteredRows)
+            //TODO: Remove before PROD. This speeds up local dev
+            foreach (var dataRow in filteredRows.Take(2))
             {
                 // Create a clone of all the elements in the section template
                 var clones = sectionTemplate.Select(n => n.CloneNode(true)).ToList();

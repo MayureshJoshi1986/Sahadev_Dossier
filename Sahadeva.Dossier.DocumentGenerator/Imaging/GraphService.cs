@@ -1,25 +1,37 @@
 ﻿using Microsoft.Extensions.Options;
 using Sahadeva.Dossier.DocumentGenerator.Configuration;
+using System.Collections.Specialized;
+using System.Web;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Imaging
 {
     internal class GraphService
     {
         private readonly GraphOptions _options;
+        private readonly ScreenshotService _screenshotService;
 
-        public GraphService(IOptions<GraphOptions> options)
+        public GraphService(IOptions<GraphOptions> options, ScreenshotService screenshotService)
         {
             _options = options.Value;
+            _screenshotService = screenshotService;
         }
 
         internal string GetGraphUrl(int cdid, string graphType)
         {
-            // TODO: Would have liked to use the same approach as the screenshot url service but for some reason 
-            // the graph endpoint does not seem to like the way the params are encoded.
-            // Cannot debug without help from AdFactors so leaving it for now
-            return _options.Endpoint
-                .Replace("#CDIDVALUE#", cdid.ToString())
-                .Replace("#METADATAVALUE#", graphType);
+            var graphApi = new UriBuilder(_options.Endpoint);
+            
+            var query = HttpUtility.ParseQueryString(string.Empty);
+            query["CDID"] = cdid.ToString();
+            query["GraphType"] = graphType;
+
+            graphApi.Query = query.ToString();
+
+            NameValueCollection queryParams = new()
+            {
+                ["selector"] = "#tblChart"
+            };
+
+            return _screenshotService.GetScreenshotUrl(graphApi.ToString(), queryParams);
         }
     }
 }

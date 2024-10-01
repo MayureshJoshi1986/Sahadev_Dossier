@@ -26,6 +26,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
             {
                 "Value" => ActivatorUtilities.CreateInstance<DocumentValueProcessor>(_serviceProvider, placeholder),
                 "MultilineValue" => ActivatorUtilities.CreateInstance<DocumentMultilineValueProcessor>(_serviceProvider, placeholder),
+                "Image" => ActivatorUtilities.CreateInstance<DocumentImageProcessor>(_serviceProvider, placeholder),
                 "Url" => ActivatorUtilities.CreateInstance<DocumentUrlProcessor>(_serviceProvider, placeholder, document),
                 "Screenshot" => ActivatorUtilities.CreateInstance<DocumentScreenshotProcessor>(_serviceProvider, placeholder),
                 "Graph" => ActivatorUtilities.CreateInstance<DocumentGraphProcessor>(_serviceProvider, job, placeholder),

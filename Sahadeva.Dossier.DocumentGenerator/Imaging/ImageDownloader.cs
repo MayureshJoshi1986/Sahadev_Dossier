@@ -40,11 +40,14 @@ namespace Sahadeva.Dossier.DocumentGenerator.Imaging
                 }
             }
 
+            Console.WriteLine($"Found {imageRequests} image(s) in the document");
+
             await ReplaceImagesAsync(document, imageRequests);
         }
 
         private async Task ReplaceImagesAsync(WordprocessingDocument document, IEnumerable<ImageDownloadRequest> imageRequests)
         {
+            var ctr = 1;
             using (var semaphore = new SemaphoreSlim(_imageMaxDegreeOfParallelism))
             {
                 var downloadTasks = imageRequests.Select(async request =>
@@ -58,6 +61,8 @@ namespace Sahadeva.Dossier.DocumentGenerator.Imaging
                         lock (_documentLock)
                         {
                             ReplaceImageInDocument(document, request.Blip, imageData);
+                            Console.WriteLine($"Replaced {ctr}/{imageRequests.Count()} images");
+                            ctr++;
                         }
                     }
                     finally

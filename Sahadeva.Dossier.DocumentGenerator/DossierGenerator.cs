@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Validation;
 using Sahadeva.Dossier.DocumentGenerator.Data;
 using Sahadeva.Dossier.DocumentGenerator.Imaging;
 using Sahadeva.Dossier.DocumentGenerator.IO;
@@ -62,6 +63,18 @@ namespace Sahadeva.Dossier.DocumentGenerator
                 CheckForUnProcessedPlaceholders(document);
 
                 _documentHelper.RemoveGrammarErrors(document);
+
+                // TODO: Check the template for the errors so we know if the issues are after generation or existing
+                //OpenXmlValidator validator = new OpenXmlValidator();
+                //int errorCount = 0;
+
+                //foreach (ValidationErrorInfo error in validator.Validate(document))
+                //{
+                //    Console.WriteLine("Error Description: {0}", error.Description);
+                //    Console.WriteLine("Error Path: {0}", error.Path.XPath);
+                //    Console.WriteLine("Error Part: {0}", error.Part.Uri);
+                //    errorCount++;
+                //}
 
                 // Flush changes from the word doc to the memory stream
                 document.Save();

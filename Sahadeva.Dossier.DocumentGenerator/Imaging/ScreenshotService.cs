@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Sahadeva.Dossier.DocumentGenerator.Configuration;
+using System.Collections.Specialized;
 using System.Web;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Imaging
@@ -13,16 +14,33 @@ namespace Sahadeva.Dossier.DocumentGenerator.Imaging
             _options = options.Value;
         }
 
-        internal string GetScreenshotUrl(string articleUrl)
+        internal string GetScreenshotUrl(string articleUrl, NameValueCollection? queryParams = null)
         {
+            queryParams ??= [];
+
             var screenshotApi = new UriBuilder(_options.Endpoint);
 
-            var query = HttpUtility.ParseQueryString(string.Empty); 
+            var query = HttpUtility.ParseQueryString(string.Empty);
+
+            query.Add(queryParams);
 
             query["url"] = articleUrl;
-            query["width"] = _options.Width.ToString();
-            query["height"] = _options.Height.ToString();
-            query["delay"] = _options.Delay.ToString();
+
+            // Ensure mandatory params are set
+            if (string.IsNullOrWhiteSpace(queryParams["width"]))
+            {
+                query["width"] = _options.Width.ToString();
+            }
+
+            if (string.IsNullOrWhiteSpace(queryParams["height"]))
+            {
+                query["height"] = _options.Height.ToString();
+            }
+
+            if (string.IsNullOrWhiteSpace(queryParams["delay"]))
+            {
+                query["delay"] = _options.Delay.ToString();
+            }
 
             screenshotApi.Query = query.ToString();
 

@@ -26,6 +26,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
                 "Row.Value" => ActivatorUtilities.CreateInstance<RowValueProcessor>(_serviceProvider, placeholder),
                 "Row.Url" => ActivatorUtilities.CreateInstance<RowUrlProcessor>(_serviceProvider, placeholder, document),
                 "Row.Screenshot" => ActivatorUtilities.CreateInstance<RowScreenshotProcessor>(_serviceProvider, placeholder),
+                "Row.Image" => ActivatorUtilities.CreateInstance<RowImageProcessor>(_serviceProvider, placeholder),
                 _ => throw new NotSupportedException($"Unsupported placeholder type: {placeholderType} found in {placeholder.Text}"),
             };
         }
