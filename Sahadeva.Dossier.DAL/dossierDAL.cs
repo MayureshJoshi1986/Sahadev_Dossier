@@ -1,4 +1,5 @@
 ﻿using Sahadeva.Dossier.Common;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -48,6 +49,40 @@ namespace Sahadeva.Dossier.DAL
             }
 
             return ds.Tables[0];
+        }
+
+        public DataTable FetchPending_DCIDsToProcess_All()
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                using (DataAccessWrapper DataAccessWrapper = new DataAccessWrapper(DatabaseConstants.ConnectionString))
+                {
+                    using (DbCommand dbCommand = DataAccessWrapper.GetStoredProcCommand(DatabaseConstants.USP_FetchPending_DCIDsToProcess_All))
+                    {
+                        #region DataSet
+                        using (DataSet dsiObject = DataAccessWrapper.ExecuteDataSet(dbCommand))
+                        {
+                            if (dsiObject != null)
+                            {
+                                if (dsiObject.Tables[0] != null)
+                                {
+                                    dt = dsiObject.Tables[0];
+                                }
+
+                            }
+                        }
+                        #endregion
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
         }
     }
 }
