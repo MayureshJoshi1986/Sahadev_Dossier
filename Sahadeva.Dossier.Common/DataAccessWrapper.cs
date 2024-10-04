@@ -23,11 +23,6 @@ namespace Sahadeva.Dossier.Common
 
         #region Constructor
 
-        public DataAccessWrapper()
-        {
-            this.database = DatabaseFactory.CreateDatabase(DatabaseConstants.RadarMTSConnection);
-        }
-
         public DataAccessWrapper(string ConnectionString)
         {
             var connectionString = ConfigurationManager.Settings[ConnectionString];

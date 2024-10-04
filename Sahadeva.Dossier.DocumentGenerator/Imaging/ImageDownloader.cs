@@ -3,6 +3,8 @@ using DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Sahadeva.Dossier.Common.Configuration;
+using Serilog;
+using Sahadeva.Dossier.Common.Logging;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Imaging
 {
@@ -23,8 +25,8 @@ namespace Sahadeva.Dossier.DocumentGenerator.Imaging
         /// </summary>
         internal async Task DownloadImagesAsync(WordprocessingDocument document)
         {
-            var drawings = document.MainDocumentPart!.Document.Descendants<Drawing>().ToList();
             var imageRequests = new List<ImageDownloadRequest>();
+            var drawings = document.MainDocumentPart!.Document.Descendants<Drawing>().ToList();
             foreach (var drawing in drawings)
             {
                 var nonVisualProps = drawing.Descendants<DocProperties>().FirstOrDefault();
@@ -40,9 +42,12 @@ namespace Sahadeva.Dossier.DocumentGenerator.Imaging
                 }
             }
 
-            Console.WriteLine($"Found {imageRequests} image(s) in the document");
+            Log.Verbose($"Found {imageRequests.Count} image(s) in the document");
 
-            await ReplaceImagesAsync(document, imageRequests);
+            using (var timeLog = Log.Logger.TrackTime("ReplaceImages"))
+            {
+                await ReplaceImagesAsync(document, imageRequests);
+            }
         }
 
         private async Task ReplaceImagesAsync(WordprocessingDocument document, IEnumerable<ImageDownloadRequest> imageRequests)
@@ -55,14 +60,18 @@ namespace Sahadeva.Dossier.DocumentGenerator.Imaging
                     await semaphore.WaitAsync();
                     try
                     {
-                        byte[] imageData = await _httpClient.GetByteArrayAsync(request.ImageUrl);
-                        // OpenXml document modifications are not thread safe. Ensure only one thread is modifying the document at any given point
-                        // the real bottleneck would be the image downloads which we are running in parallel
-                        lock (_documentLock)
+                        var loggerWithContext = Log.ForContext("imageUrl", request.ImageUrl);
+                        using (var timeLog = loggerWithContext.TrackTime("DownloadImage"))
                         {
-                            ReplaceImageInDocument(document, request.Blip, imageData);
-                            Console.WriteLine($"Replaced {ctr}/{imageRequests.Count()} images");
-                            ctr++;
+                            byte[] imageData = await _httpClient.GetByteArrayAsync(request.ImageUrl);
+                            // OpenXml document modifications are not thread safe. Ensure only one thread is modifying the document at any given point
+                            // the real bottleneck would be the image downloads which we are running in parallel
+                            lock (_documentLock)
+                            {
+                                ReplaceImageInDocument(document, request.Blip, imageData);
+                                Log.Debug($"Finished replacing image {ctr}/{imageRequests.Count()} ");
+                                ctr++;
+                            }
                         }
                     }
                     finally

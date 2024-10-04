@@ -5,6 +5,6 @@ namespace Sahadeva.Dossier.DocumentGenerator.Storage
     {
         Task<byte[]> GetFile(string fileName);
 
-        void WriteFile(MemoryStream stream, string fileName);
+        Task WriteFile(MemoryStream stream, string fileName);
     }
 }

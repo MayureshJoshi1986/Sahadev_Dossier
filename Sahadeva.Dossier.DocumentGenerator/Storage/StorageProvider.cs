@@ -2,6 +2,7 @@
 {
     internal enum StorageProvider
     {
-        Filesystem
+        Filesystem,
+        S3
     }
 }

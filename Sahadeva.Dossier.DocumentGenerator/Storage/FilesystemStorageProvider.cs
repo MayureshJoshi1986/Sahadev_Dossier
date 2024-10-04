@@ -1,4 +1,5 @@
-﻿using Sahadeva.Dossier.DocumentGenerator.Configuration;
+﻿using Microsoft.Extensions.Options;
+using Sahadeva.Dossier.DocumentGenerator.Configuration;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Storage
 {
@@ -6,9 +7,9 @@ namespace Sahadeva.Dossier.DocumentGenerator.Storage
     {
         private readonly FilesystemStorageOptions _options;
 
-        public FilesystemStorageProvider(FilesystemStorageOptions options)
+        public FilesystemStorageProvider(IOptions<FilesystemStorageOptions> options)
         {
-            _options = options;
+            _options = options.Value;
         }
 
         public Task<byte[]> GetFile(string fileName)
@@ -17,7 +18,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Storage
             return File.ReadAllBytesAsync(filePath);
         }
 
-        public void WriteFile(MemoryStream stream, string fileName)
+        public async Task WriteFile(MemoryStream stream, string fileName)
         {
             var filePath = GetOutputPath(fileName);
 
@@ -28,9 +29,10 @@ namespace Sahadeva.Dossier.DocumentGenerator.Storage
                 Directory.CreateDirectory(directory!);
             }
 
-            using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true))
             {
-                stream.WriteTo(fileStream);
+                stream.Position = 0; // Ensure the stream's position is at the start
+                await stream.CopyToAsync(fileStream);
             }
         }
 

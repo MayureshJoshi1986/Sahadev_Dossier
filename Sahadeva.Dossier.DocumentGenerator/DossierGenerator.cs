@@ -1,11 +1,13 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Validation;
+using Sahadeva.Dossier.DAL;
 using Sahadeva.Dossier.DocumentGenerator.Data;
 using Sahadeva.Dossier.DocumentGenerator.Imaging;
 using Sahadeva.Dossier.DocumentGenerator.IO;
 using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using Sahadeva.Dossier.DocumentGenerator.Processors;
 using Sahadeva.Dossier.Entities;
+using Serilog;
+using Serilog.Context;
 
 namespace Sahadeva.Dossier.DocumentGenerator
 {
@@ -17,6 +19,7 @@ namespace Sahadeva.Dossier.DocumentGenerator
         private readonly PlaceholderFactory _placeholderFactory;
         private readonly DatasetLoader _datasetLoader;
         private readonly ImageDownloader _imageDownloader;
+        private readonly DossierDAL _dal;
 
         public DossierGenerator(
             DocumentHelper documentHelper,
@@ -24,7 +27,8 @@ namespace Sahadeva.Dossier.DocumentGenerator
             PlaceholderHelper placeholderHelper,
             PlaceholderFactory placeholderFactory,
             DatasetLoader datasetLoader,
-            ImageDownloader imageDownloader)
+            ImageDownloader imageDownloader,
+            DossierDAL dal)
         {
             _documentHelper = documentHelper;
             _fileManager = fileManager;
@@ -32,54 +36,86 @@ namespace Sahadeva.Dossier.DocumentGenerator
             _placeholderFactory = placeholderFactory;
             _datasetLoader = datasetLoader;
             _imageDownloader = imageDownloader;
+            _dal = dal;
         }
 
         internal async Task ExecuteJob(DossierJob job)
         {
-            using (MemoryStream stream = await ReadFromTemplate(job.TemplateName))
-            using (WordprocessingDocument document = WordprocessingDocument.Open(stream, true))
+            try
             {
-                _documentHelper.StripTrackingInfo(document);
+                _dal.UpdateJobStatus(job.CoverageDossierId, DossierStatus.DossierGenerationStart);
+                Log.Verbose("Marked dossier generation start");
 
-                _placeholderHelper.FixPlaceholdersAcrossRuns(document);
-                _placeholderHelper.IsolatePlaceholders(document);
-
-                var placeholders = _placeholderHelper.GetPlaceholdersWithDataSource(document);
-
-                var data = _datasetLoader.LoadDataset(job, placeholders.Select(p => p.Text));
-
-                foreach (var placeholder in placeholders)
+                using (MemoryStream stream = await ReadFromTemplate(job.TemplateName))
+                using (WordprocessingDocument document = WordprocessingDocument.Open(stream, true))
                 {
-                    var processor = _placeholderFactory.CreateProcessor(job, placeholder, document);
+                    _documentHelper.StripTrackingInfo(document);
+                    Log.Verbose("Removed tracking info from document");
 
-                    var dataTable = data.Tables[processor.TableName]
-                        ?? throw new ApplicationException($"Could not find table for {placeholder.Text} having name {processor.TableName}");
-                    
-                    processor.ReplacePlaceholder(dataTable);
+                    _placeholderHelper.FixPlaceholdersAcrossRuns(document);
+                    Log.Verbose("Fixed placeholders that span multiple runs");
+
+                    _placeholderHelper.IsolatePlaceholders(document);
+                    Log.Verbose("Placed each placeholder in its own text node");
+
+                    var placeholders = _placeholderHelper.GetPlaceholdersWithDataSource(document);
+                    Log.Verbose("Extracted placeholders with data sources");
+
+                    var data = _datasetLoader.LoadDataset(job, placeholders.Select(p => p.Text));
+                    Log.Verbose("Loaded the required datasets");
+
+                    foreach (var placeholder in placeholders)
+                    {
+                        using (LogContext.PushProperty("placeholder", placeholder.Text))
+                        {
+                            var processor = _placeholderFactory.CreateProcessor(job, placeholder, document);
+
+                            var dataTable = data.Tables[processor.TableName]
+                                ?? throw new ApplicationException($"Could not find table for {placeholder.Text} having name {processor.TableName}");
+
+                            processor.ReplacePlaceholder(dataTable);
+                        }
+                    }
+                    Log.Verbose("Finished processing placeholders");
+
+                    await _imageDownloader.DownloadImagesAsync(document);
+                    Log.Verbose("Finished Downloading images");
+
+                    CheckForUnProcessedPlaceholders(document);
+                    Log.Verbose("Checking for unprocessed placeholders");
+
+                    _documentHelper.RemoveGrammarErrors(document);
+                    Log.Verbose("Removed grammar errors");
+
+                    // TODO: Check the template for the errors so we know if the issues are after generation or existing
+                    //OpenXmlValidator validator = new OpenXmlValidator();
+                    //int errorCount = 0;
+
+                    //foreach (ValidationErrorInfo error in validator.Validate(document))
+                    //{
+                    //    Console.WriteLine("Error Description: {0}", error.Description);
+                    //    Console.WriteLine("Error Path: {0}", error.Path.XPath);
+                    //    Console.WriteLine("Error Part: {0}", error.Part.Uri);
+                    //    errorCount++;
+                    //}
+
+                    // Flush changes from the word doc to the memory stream
+                    document.Save();
+
+                    await WriteFile(stream, job.OutputFilePath);
+                    Log.Verbose("Saved dossier");
+
+                    _dal.UpdateJobStatus(job.CoverageDossierId, DossierStatus.DossierGenerationCompleted);
+                    Log.Verbose("Updated dossier completed status");
                 }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, ex.Message);
 
-                await _imageDownloader.DownloadImagesAsync(document);
-
-                CheckForUnProcessedPlaceholders(document);
-
-                _documentHelper.RemoveGrammarErrors(document);
-
-                // TODO: Check the template for the errors so we know if the issues are after generation or existing
-                //OpenXmlValidator validator = new OpenXmlValidator();
-                //int errorCount = 0;
-
-                //foreach (ValidationErrorInfo error in validator.Validate(document))
-                //{
-                //    Console.WriteLine("Error Description: {0}", error.Description);
-                //    Console.WriteLine("Error Path: {0}", error.Path.XPath);
-                //    Console.WriteLine("Error Part: {0}", error.Part.Uri);
-                //    errorCount++;
-                //}
-
-                // Flush changes from the word doc to the memory stream
-                document.Save();
-
-                WriteFile(stream, job.TemplateName);
+                // Failed to generate the dossier, reset to prev state for it to be picked up again
+                // TODO: Ideally we should have a new state for dossier generation failure 
+                _dal.UpdateJobStatus(job.CoverageDossierId, DossierStatus.SummaryCompleted);
             }
         }
 
@@ -107,9 +143,9 @@ namespace Sahadeva.Dossier.DocumentGenerator
             return stream;
         }
 
-        private void WriteFile(MemoryStream stream, string fileName)
+        private async Task WriteFile(MemoryStream stream, string fileName)
         {
-            _fileManager.WriteFile(stream, fileName);
+            await _fileManager.WriteFile(stream, fileName);
         }
     }
 }

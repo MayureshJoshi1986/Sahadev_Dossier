@@ -16,9 +16,9 @@ namespace Sahadeva.Dossier.DocumentGenerator.IO
             return _storageProvider.GetFile(fileName);
         }
 
-        internal void WriteFile(MemoryStream stream, string fileName)
+        internal Task WriteFile(MemoryStream stream, string fileName)
         {
-            _storageProvider.WriteFile(stream, fileName);
+            return _storageProvider.WriteFile(stream, fileName);
         }
     }
 }

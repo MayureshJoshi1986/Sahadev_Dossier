@@ -1,5 +1,5 @@
 ﻿using Sahadeva.Dossier.Common;
-using System;
+using Sahadeva.Dossier.Entities;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -21,7 +21,7 @@ namespace Sahadeva.Dossier.DAL
 
     public class DossierDAL
     {
-        private readonly Dictionary<DossierDataSet, string> _dataSetMap = new Dictionary<DossierDataSet, string> 
+        private readonly Dictionary<DossierDataSet, string> _dataSetMap = new Dictionary<DossierDataSet, string>
         {
             { DossierDataSet.CoverPage, "Fetch_CoverPage_Section" },
             { DossierDataSet.OverviewTable, "Fetch_OverviewTable_Section" },
@@ -40,11 +40,11 @@ namespace Sahadeva.Dossier.DAL
 
             using (DataAccessWrapper DataAccessWrapper = new DataAccessWrapper(DatabaseConstants.ConnectionString))
             {
-                using (DbCommand dbcommand = DataAccessWrapper.GetStoredProcCommand(_dataSetMap[dataSet]))
+                using (DbCommand dbCommand = DataAccessWrapper.GetStoredProcCommand(_dataSetMap[dataSet]))
                 {
-                    DataAccessWrapper.AddInParameter(dbcommand, DatabaseConstants.CDID, DbType.Int32, coverageDossierId);
+                    DataAccessWrapper.AddInParameter(dbCommand, DatabaseConstants.CDID, DbType.Int32, coverageDossierId);
 
-                    ds = DataAccessWrapper.ExecuteDataSet(dbcommand);
+                    ds = DataAccessWrapper.ExecuteDataSet(dbCommand);
                 }
             }
 
@@ -55,34 +55,41 @@ namespace Sahadeva.Dossier.DAL
         {
             DataTable dt = new DataTable();
 
-            try
+            using (DataAccessWrapper DataAccessWrapper = new DataAccessWrapper(DatabaseConstants.ConnectionString))
             {
-                using (DataAccessWrapper DataAccessWrapper = new DataAccessWrapper(DatabaseConstants.ConnectionString))
+                using (DbCommand dbCommand = DataAccessWrapper.GetStoredProcCommand(DatabaseConstants.USP_FetchPending_DCIDsToProcess_All))
                 {
-                    using (DbCommand dbCommand = DataAccessWrapper.GetStoredProcCommand(DatabaseConstants.USP_FetchPending_DCIDsToProcess_All))
+                    #region DataSet
+                    using (DataSet dsiObject = DataAccessWrapper.ExecuteDataSet(dbCommand))
                     {
-                        #region DataSet
-                        using (DataSet dsiObject = DataAccessWrapper.ExecuteDataSet(dbCommand))
+                        if (dsiObject != null)
                         {
-                            if (dsiObject != null)
+                            if (dsiObject.Tables[0] != null)
                             {
-                                if (dsiObject.Tables[0] != null)
-                                {
-                                    dt = dsiObject.Tables[0];
-                                }
-
+                                dt = dsiObject.Tables[0];
                             }
+
                         }
-                        #endregion
                     }
+                    #endregion
                 }
             }
 
-            catch (Exception ex)
-            {
-                throw ex;
-            }
             return dt;
+        }
+
+        public void UpdateJobStatus(int coverageDossierId, DossierStatus status)
+        {
+            using (DataAccessWrapper DataAccessWrapper = new DataAccessWrapper(DatabaseConstants.ConnectionString))
+            {
+                using (DbCommand dbCommand = DataAccessWrapper.GetStoredProcCommand(DatabaseConstants.USP_CoverageDossier_UpdateStatus))
+                {
+                    DataAccessWrapper.AddInParameter(dbCommand, DatabaseConstants.CDID, DbType.Int32, coverageDossierId);
+                    DataAccessWrapper.AddInParameter(dbCommand, DatabaseConstants.StatusID, DbType.Int32, status);
+
+                    DataAccessWrapper.ExecuteNonQuery(dbCommand);
+                }
+            }
         }
     }
 }

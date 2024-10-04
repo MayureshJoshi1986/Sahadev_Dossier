@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using Sahadeva.Dossier.DocumentGenerator.Parsers;
+using Serilog;
 using System.Data;
 using System.Text.RegularExpressions;
 
@@ -79,8 +80,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
 
             if (filteredRows.Length == 0)
             {
-                // TODO: Should we throw here?
-                Console.WriteLine($"No data found for {filterCriteria}");
+                Log.Warning($"No data found for {filterCriteria}");
             }
 
             foreach (var dataRow in filteredRows)
