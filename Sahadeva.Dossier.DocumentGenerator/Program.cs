@@ -11,6 +11,7 @@ using Sahadeva.Dossier.DocumentGenerator.Data;
 using Sahadeva.Dossier.DocumentGenerator.Formatters;
 using Sahadeva.Dossier.DocumentGenerator.Imaging;
 using Sahadeva.Dossier.DocumentGenerator.IO;
+using Sahadeva.Dossier.DocumentGenerator.Messaging;
 using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using Sahadeva.Dossier.DocumentGenerator.Parsers;
 using Sahadeva.Dossier.DocumentGenerator.Processors;
@@ -19,6 +20,8 @@ using Sahadeva.Dossier.Entities;
 using Serilog;
 using Serilog.Context;
 using System.Diagnostics;
+using System.Reflection;
+using System.Text;
 using ConfigurationManager = Sahadeva.Dossier.Common.Configuration.ConfigurationManager;
 
 namespace Sahadeva.Dossier.DocumentGenerator
@@ -36,7 +39,12 @@ namespace Sahadeva.Dossier.DocumentGenerator
 
             ConfigureLogger();
 
-            var sqsClient = _appHost.Services.GetRequiredService<SQSClient>();
+            if (bool.TryParse(ConfigurationManager.Settings[ConfigKeys.DEBUG_ENV], out bool debug) && debug)
+            {
+                PrintSettings();
+            }
+
+            var sqsClient = _appHost.Services.GetRequiredService<IJobFetcher>();
 
             // we want this to keep running and processing jobs as they become available
             while (true)
@@ -71,8 +79,8 @@ namespace Sahadeva.Dossier.DocumentGenerator
                 }
                 catch (Exception ex)
                 {
-                    var logWithContext = job == null ? 
-                        Log.Logger : 
+                    var logWithContext = job == null ?
+                        Log.Logger :
                         Log.ForContext("runId", job)
                            .ForContext("cdid", job.CoverageDossierId)
                            .ForContext("template", job.TemplateName);
@@ -84,7 +92,7 @@ namespace Sahadeva.Dossier.DocumentGenerator
 
         private static bool RunningInContainer => Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
 
-        private static void ConfigureLogger() => Log.Logger = LoggerFactory.CreateLogger("article-fetcher", "Main");
+        private static void ConfigureLogger() => Log.Logger = LoggerFactory.CreateLogger("dossier-document-generator", "Main");
 
         /// <summary>
         /// Bootstraps the application
@@ -116,7 +124,13 @@ namespace Sahadeva.Dossier.DocumentGenerator
             services.AddSingleton<GraphService>();
             services.AddSingleton<DossierDAL>();
             services.AddSingleton<ImageDownloader>();
-            services.AddSingleton<SQSClient>();
+
+#if DEBUG
+            services.AddSingleton<IJobFetcher, DevJobFetcher>();
+#else
+            // Release mode implementation
+            services.AddSingleton<IJobFetcher, SQSJobFetcher>();
+#endif
 
             services.AddTransient<DossierGenerator>();
 
@@ -153,6 +167,21 @@ namespace Sahadeva.Dossier.DocumentGenerator
             {
                 throw new ApplicationException($"Storage provider could not be found. Please check config 'Storage:Provider'");
             }
+        }
+
+        private static void PrintSettings()
+        {
+            FieldInfo[] fields = typeof(ConfigKeys).GetFields(BindingFlags.Public | BindingFlags.Static);
+            var settings = new StringBuilder().AppendLine();
+
+            foreach (FieldInfo field in fields)
+            {
+                var key = (string)field.GetValue(null)!;
+                var value = ConfigurationManager.Settings[key] ?? "<not set>";
+                settings.AppendLine($"{key}={value}");
+
+            }
+            Log.Verbose("Settings: {settings}", settings.ToString());
         }
     }
 }

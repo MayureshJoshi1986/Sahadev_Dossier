@@ -11,7 +11,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sahadeva.Dossier.Entities",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sahadeva.Dossier.DocumentGenerator", "Sahadeva.Dossier.DocumentGenerator\Sahadeva.Dossier.DocumentGenerator.csproj", "{5535C5CA-BE2E-44D4-80C4-E9580AC57D33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sahadeva.Dossier.JobGenerator", "Sahadeva.Dossier.JobGenerator\Sahadeva.Dossier.JobGenerator.csproj", "{4553AF03-EFF5-45F8-8D19-9C7094115A14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sahadeva.Dossier.JobGenerator", "Sahadeva.Dossier.JobGenerator\Sahadeva.Dossier.JobGenerator.csproj", "{4553AF03-EFF5-45F8-8D19-9C7094115A14}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{253302BD-2AF0-4C1E-BA8E-C7B6B6E3EA0F}"
+	ProjectSection(SolutionItems) = preProject
+		Docker\docker-compose.yml = Docker\docker-compose.yml
+		Docker\DocumentGenerator.Dockerfile = Docker\DocumentGenerator.Dockerfile
+		Docker\JobGenerator.Dockerfile = Docker\JobGenerator.Dockerfile
+		Docker\Makefile = Docker\Makefile
+		Docker\update_host_ip.sh = Docker\update_host_ip.sh
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

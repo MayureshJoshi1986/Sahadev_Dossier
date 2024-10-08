@@ -42,7 +42,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
 
         protected string GetValueFromSource(DataRow data)
         {
-            if (string.IsNullOrWhiteSpace(ColumnName) || !data.Table.Columns.Contains(ColumnName)) { throw new ApplicationException($"Column name missing or invalid: '{ColumnName}'"); }
+            if (string.IsNullOrWhiteSpace(ColumnName) || !data.Table.Columns.Contains(ColumnName)) { throw new ApplicationException($"Column name missing or invalid: '{data.Table.TableName}.{ColumnName}'"); }
             return data[ColumnName].ToString()!;
         }
 

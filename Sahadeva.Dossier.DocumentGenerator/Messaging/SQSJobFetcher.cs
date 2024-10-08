@@ -5,14 +5,14 @@ using Newtonsoft.Json;
 using Sahadeva.Dossier.Common.Configuration;
 using Sahadeva.Dossier.Entities;
 
-namespace Sahadeva.Dossier.DocumentGenerator
+namespace Sahadeva.Dossier.DocumentGenerator.Messaging
 {
-    internal class SQSClient
+    internal class SQSJobFetcher : IJobFetcher
     {
         private readonly AmazonSQSClient _sqsClient;
         private readonly string _queueUrl;
 
-        public SQSClient()
+        public SQSJobFetcher()
         {
             var sqsConfig = new AmazonSQSConfig
             {

@@ -130,7 +130,9 @@ namespace Sahadeva.Dossier.DocumentGenerator
 
             if (leftOvers.Any())
             {
-                throw new ApplicationException($"The document contains {leftOvers.Count} unprocessed placeholder(s)");
+                throw new ApplicationException(
+                    $"The document contains {leftOvers.Count} unprocessed placeholder(s). " +
+                    $"[{string.Join(",", leftOvers.Select(l => l.Text))}]");
             }
         }
 

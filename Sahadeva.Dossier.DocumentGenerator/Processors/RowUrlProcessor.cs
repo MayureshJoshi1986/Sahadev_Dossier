@@ -17,8 +17,8 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
 
         public void ReplacePlaceholder(DataRow data)
         {
-            if (string.IsNullOrWhiteSpace(LinkColumnName) || !data.Table.Columns.Contains(LinkColumnName)) { throw new ApplicationException($"Column name missing or invalid: '{LinkColumnName}'"); }
-            if (string.IsNullOrWhiteSpace(DisplayColumnName) || !data.Table.Columns.Contains(DisplayColumnName)) { throw new ApplicationException($"Column name missing or invalid: '{DisplayColumnName}'"); }
+            if (string.IsNullOrWhiteSpace(LinkColumnName) || !data.Table.Columns.Contains(LinkColumnName)) { throw new ApplicationException($"Column name missing or invalid: '{data.Table.TableName}.{LinkColumnName}'"); }
+            if (string.IsNullOrWhiteSpace(DisplayColumnName) || !data.Table.Columns.Contains(DisplayColumnName)) { throw new ApplicationException($"Column name missing or invalid: '{data.Table.TableName}.{DisplayColumnName}'"); }
             
             ReplacePlaceholderWithUrl(data[LinkColumnName].ToString()!, data[DisplayColumnName].ToString()!);
         }
