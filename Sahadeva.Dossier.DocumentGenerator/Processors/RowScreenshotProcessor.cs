@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using Sahadeva.Dossier.DocumentGenerator.Imaging;
 using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using System.Data;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Processors
@@ -13,6 +14,8 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
         private readonly ScreenshotService _screenshotService;
 
         protected string ColumnName { get; private set; } = string.Empty;
+
+        private string? _cachePath = null;
 
         public RowScreenshotProcessor(Placeholder<Drawing> placeholder, ScreenshotService screenshotService) : base(placeholder)
         {
@@ -43,13 +46,25 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
         protected string GetValueFromSource(DataRow data)
         {
             if (string.IsNullOrWhiteSpace(ColumnName) || !data.Table.Columns.Contains(ColumnName)) { throw new ApplicationException($"Column name missing or invalid: '{data.Table.TableName}.{ColumnName}'"); }
+
+            if (data.Table.Columns.Contains("CachePath"))
+            {
+                _cachePath = data.Table.Rows[0]["CachePath"].ToString();
+            }
+
             return data[ColumnName].ToString()!;
         }
 
         private void SetImageUrl(string url)
         {
+            var processingInstructions = new StringBuilder($"AF.Image={url}");
+            if (_cachePath != null)
+            {
+                processingInstructions.Append($";CachePath={_cachePath}");
+            }
+
             var nonVisualProps = Placeholder.Element.Descendants<DocProperties>().First();
-            nonVisualProps.Description = $"AF.Image={url}";
+            nonVisualProps.Description = processingInstructions.ToString();
         }
 
         [GeneratedRegex(@"(?<=\[AF\.Row\.Screenshot:)[^;\|\]]+", RegexOptions.IgnoreCase | RegexOptions.Compiled)]

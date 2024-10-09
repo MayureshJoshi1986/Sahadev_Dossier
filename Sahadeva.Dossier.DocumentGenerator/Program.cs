@@ -4,6 +4,7 @@ using DotNetEnv;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Sahadeva.Dossier.Common.Logging;
 using Sahadeva.Dossier.DAL;
 using Sahadeva.Dossier.DocumentGenerator.Configuration;
@@ -15,7 +16,6 @@ using Sahadeva.Dossier.DocumentGenerator.Messaging;
 using Sahadeva.Dossier.DocumentGenerator.OpenXml;
 using Sahadeva.Dossier.DocumentGenerator.Parsers;
 using Sahadeva.Dossier.DocumentGenerator.Processors;
-using Sahadeva.Dossier.DocumentGenerator.Storage;
 using Sahadeva.Dossier.Entities;
 using Serilog;
 using Serilog.Context;
@@ -28,7 +28,7 @@ namespace Sahadeva.Dossier.DocumentGenerator
 {
     internal class Program
     {
-        static IHost _appHost = InitialiseHost();
+        static readonly IHost _appHost = InitialiseHost();
 
         static async Task Main(string[] args)
         {
@@ -112,7 +112,6 @@ namespace Sahadeva.Dossier.DocumentGenerator
 
             ConfigureStorageProvider(services, configuration);
 
-            services.AddSingleton<FileManager>();
             services.AddSingleton<DocumentHelper>();
             services.AddSingleton<PlaceholderHelper>();
             services.AddSingleton<PlaceholderParser>();
@@ -144,7 +143,7 @@ namespace Sahadeva.Dossier.DocumentGenerator
 
             if (storageProvider == StorageProvider.Filesystem)
             {
-                services.Configure<FilesystemStorageOptions>(configuration.GetRequiredSection("Storage:Options"));
+                services.Configure<TemplateStorageOptions>(configuration.GetRequiredSection("Storage:Options"));
                 services.AddSingleton<IStorageProvider, FilesystemStorageProvider>();
             }
             else if (storageProvider == StorageProvider.S3)
@@ -161,6 +160,11 @@ namespace Sahadeva.Dossier.DocumentGenerator
                 services.AddAWSService<IAmazonS3>();
 
                 services.Configure<S3StorageOptions>(configuration.GetRequiredSection("Storage:Options"));
+                
+                // Manually bind IOptions<TemplateStorageOptions> to IOptions<S3StorageOptions>
+                services.AddSingleton<IOptions<TemplateStorageOptions>>(sp =>
+                    sp.GetRequiredService<IOptions<S3StorageOptions>>());
+
                 services.AddSingleton<IStorageProvider, S3StorageProvider>();
             }
             else

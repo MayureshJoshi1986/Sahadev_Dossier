@@ -1,4 +1,4 @@
-﻿namespace Sahadeva.Dossier.DocumentGenerator.Storage
+﻿namespace Sahadeva.Dossier.DocumentGenerator.IO
 {
     internal enum StorageProvider
     {

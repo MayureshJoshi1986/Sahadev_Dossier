@@ -4,7 +4,7 @@ using Amazon.S3.Transfer;
 using Microsoft.Extensions.Options;
 using Sahadeva.Dossier.DocumentGenerator.Configuration;
 
-namespace Sahadeva.Dossier.DocumentGenerator.Storage
+namespace Sahadeva.Dossier.DocumentGenerator.IO
 {
     internal class S3StorageProvider : IStorageProvider
     {
@@ -17,12 +17,12 @@ namespace Sahadeva.Dossier.DocumentGenerator.Storage
             _options = options.Value;
         }
 
-        public async Task<byte[]> GetFile(string fileName)
+        public async Task<byte[]> GetFile(string filePath)
         {
             var request = new GetObjectRequest
             {
                 BucketName = _options.BucketName,
-                Key = GetTemplatePath(fileName)
+                Key = filePath
             };
 
             using (var response = await _s3Client.GetObjectAsync(request))
@@ -33,7 +33,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Storage
             }
         }
 
-        public async Task WriteFile(MemoryStream stream, string fileName)
+        public async Task WriteFile(MemoryStream stream, string filePath)
         {
             stream.Position = 0; // Ensure the stream's position is at the start
 
@@ -43,17 +43,12 @@ namespace Sahadeva.Dossier.DocumentGenerator.Storage
             {
                 InputStream = stream,
                 BucketName = _options.BucketName,
-                Key = GetOutputPath(fileName),
+                Key = filePath,
                 ContentType = "application/octet-stream",
                 AutoCloseStream = false
             };
 
             await fileTransferUtility.UploadAsync(request);
         }
-
-        private string GetTemplatePath(string fileName) => Path.Combine(_options.TemplatePath, fileName).Replace("\\", "/");
-
-        private string GetOutputPath(string fileName) => Path.Combine(_options.OutputPath, fileName).Replace("\\", "/");
-
     }
 }

@@ -1,11 +1,7 @@
 ﻿namespace Sahadeva.Dossier.DocumentGenerator.Configuration
 {
-    internal class S3StorageOptions
+    internal class S3StorageOptions : TemplateStorageOptions
     {
         public string BucketName { get; set; } = string.Empty;
-        
-        public string TemplatePath { get; set; } = string.Empty;
-
-        public string OutputPath { get; set; } = string.Empty;
     }
 }

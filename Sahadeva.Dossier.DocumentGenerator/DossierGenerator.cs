@@ -1,5 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
+using Microsoft.Extensions.Options;
 using Sahadeva.Dossier.DAL;
+using Sahadeva.Dossier.DocumentGenerator.Configuration;
 using Sahadeva.Dossier.DocumentGenerator.Data;
 using Sahadeva.Dossier.DocumentGenerator.Imaging;
 using Sahadeva.Dossier.DocumentGenerator.IO;
@@ -14,29 +16,32 @@ namespace Sahadeva.Dossier.DocumentGenerator
     internal class DossierGenerator
     {
         private readonly DocumentHelper _documentHelper;
-        private readonly FileManager _fileManager;
+        private readonly IStorageProvider _storageProvider;
         private readonly PlaceholderHelper _placeholderHelper;
         private readonly PlaceholderFactory _placeholderFactory;
         private readonly DatasetLoader _datasetLoader;
         private readonly ImageDownloader _imageDownloader;
         private readonly DossierDAL _dal;
+        private readonly TemplateStorageOptions _templateStorageOptions;
 
         public DossierGenerator(
             DocumentHelper documentHelper,
-            FileManager fileManager,
+            IStorageProvider storageProvider,
             PlaceholderHelper placeholderHelper,
             PlaceholderFactory placeholderFactory,
             DatasetLoader datasetLoader,
             ImageDownloader imageDownloader,
-            DossierDAL dal)
+            DossierDAL dal,
+            IOptions<TemplateStorageOptions> options)
         {
             _documentHelper = documentHelper;
-            _fileManager = fileManager;
+            _storageProvider = storageProvider;
             _placeholderHelper = placeholderHelper;
             _placeholderFactory = placeholderFactory;
             _datasetLoader = datasetLoader;
             _imageDownloader = imageDownloader;
             _dal = dal;
+            _templateStorageOptions = options.Value;
         }
 
         internal async Task ExecuteJob(DossierJob job)
@@ -138,7 +143,10 @@ namespace Sahadeva.Dossier.DocumentGenerator
 
         private async Task<MemoryStream> ReadFromTemplate(string fileName)
         {
-            var content = await _fileManager.GetTemplate(fileName);
+            var filePath = Path.Combine(_templateStorageOptions.TemplatePath, fileName).Replace("\\", "/");
+            var content = await _storageProvider.GetFile(filePath);
+
+            // This creates an expandable memory stream. Do not try to create a new MemoryStream directly from the byte[]
             var stream = new MemoryStream();
             stream.Write(content);
 
@@ -147,7 +155,8 @@ namespace Sahadeva.Dossier.DocumentGenerator
 
         private async Task WriteFile(MemoryStream stream, string fileName)
         {
-            await _fileManager.WriteFile(stream, fileName);
+            var filePath = Path.Combine(_templateStorageOptions.OutputPath, fileName).Replace("\\", "/");
+            await _storageProvider.WriteFile(stream, filePath);
         }
     }
 }
