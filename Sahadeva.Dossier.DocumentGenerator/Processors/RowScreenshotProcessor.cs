@@ -49,7 +49,7 @@ namespace Sahadeva.Dossier.DocumentGenerator.Processors
 
             if (data.Table.Columns.Contains("CachePath"))
             {
-                _cachePath = data.Table.Rows[0]["CachePath"].ToString();
+                _cachePath = data["CachePath"].ToString();
             }
 
             return data[ColumnName].ToString()!;
