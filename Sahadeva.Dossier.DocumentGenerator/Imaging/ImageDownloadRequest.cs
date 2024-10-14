@@ -1,6 +1,4 @@
 ﻿using DocumentFormat.OpenXml.Drawing;
-using Microsoft.Extensions.FileSystemGlobbing.Internal;
-using Sprache;
 using System.Text.RegularExpressions;
 
 namespace Sahadeva.Dossier.DocumentGenerator.Imaging

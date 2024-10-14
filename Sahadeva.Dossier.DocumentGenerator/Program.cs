@@ -125,6 +125,8 @@ namespace Sahadeva.Dossier.DocumentGenerator
             services.AddSingleton<ImageDownloader>();
 
 #if DEBUG
+            // this service bypasses the SQS queue and directly fetches the first available job from the DB
+            // used for debugging purposes only
             services.AddSingleton<IJobFetcher, DevJobFetcher>();
 #else
             // Release mode implementation

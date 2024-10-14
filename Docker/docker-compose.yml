@@ -28,5 +28,8 @@ services:
       - DEBUG_ENV=true #prints config to console
     volumes:
       - ../logs:/var/log/adfactors #host mapping which should also be present in filebeat so that it can read the logs
+      - /mnt/c/projects/adFactors/Dossier/templates:/app/templates
+      - /mnt/c/projects/adFactors/Dossier/output:/app/output
+      - /mnt/c/projects/adFactors/Dossier/cache:/app/cache
     extra_hosts:
       - "host.docker.internal:$HOST_INTERNAL_IP"
